@@ -1,0 +1,18 @@
+select{
+    text-align: center;
+}
+
+table ,td,th{
+    border: solid 1px #ccc;
+    padding: 1vw;
+    text-align: center;
+}
+
+#marks_table {
+    width: 100%;
+    align-self: center;
+}
+
+#term ,#subject{
+    width: 20%;
+}

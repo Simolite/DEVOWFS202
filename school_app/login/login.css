@@ -1,0 +1,95 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background:#4b66b8;
+    font-family: Roboto,Arial, Helvetica, sans-serif;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container{
+    display: flex;
+    gap: 3vw;
+}
+
+.welcome{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 40vw;
+    height: 20vw;
+    gap: 1vw;
+}
+
+.login {
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 1vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1vw;
+    gap: 1vw;
+    width: 30vw;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1vw;
+}
+
+form input {
+    height: 5vh;
+    border: solid 1px #ccc;
+    border-radius: 0.5vw;
+    display: flex;
+    padding-left: 1vw;
+    text-align: start;
+}
+
+input[type='submit']{
+    background: #f9a825;
+    text-align: center;
+    padding-left: 0;
+    color: #fff;
+    transition: all ease 0.5s;
+}
+
+input[type='submit']:hover{
+    background: #f57f17;
+    cursor: pointer;
+    color: #000;
+    transition: all ease 0.5s;
+}
+
+.login a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all ease 0.5s;
+}
+
+.login a:hover {
+    color : #135bc6 ;
+    text-decoration: underline;
+    transition: all ease 0.5s;
+}
+
+
+img{
+    width: 20vw;
+    height: auto;
+    border-radius: 50%;
+    
+}
