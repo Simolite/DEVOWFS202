@@ -13,12 +13,6 @@ if (!in_array($_SESSION['role'], ['student', 'teacher', 'admin'])) {
 
 require_once 'functions.php';
 
-// Connect to DB
-$conn = new mysqli('localhost', 'root', '', 'school_app');
-if ($conn->connect_error) {
-    echo json_encode(['error' => 'DB connection failed']);
-    exit;
-}
 
 // Check required term
 if (!isset($_GET['term']) || !is_numeric($_GET['term'])) {

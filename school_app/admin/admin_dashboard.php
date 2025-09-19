@@ -10,10 +10,7 @@ if ($_SESSION['role'] !== 'admin') {
 
 $linked_id = $_SESSION['linked_id'];
 
-$conn = new mysqli('localhost', 'root', '', 'school_app');
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once '../api/functions.php';
 
 $stmt = $conn->prepare("SELECT fname FROM admins WHERE id = ?");
 $stmt->bind_param("i", $linked_id);

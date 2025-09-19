@@ -13,11 +13,6 @@ if (!in_array($_SESSION['role'], ['student', 'teacher', 'admin'])) {
 
 require_once 'functions.php';
 
-$conn = new mysqli('localhost', 'root', '', 'school_app');
-if ($conn->connect_error) {
-    echo json_encode(['error' => 'DB connection failed']);
-    exit;
-}
 
 if ($_SESSION['role'] === 'student' || !isset($_GET['student_id']) || !is_numeric($_GET['student_id'])){
     $student_id = $_SESSION['linked_id'];

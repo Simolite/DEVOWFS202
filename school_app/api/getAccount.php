@@ -12,11 +12,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
 
 require_once 'functions.php';
 
-$conn = new mysqli('localhost', 'root', '', 'school_app');
-if ($conn->connect_error) {
-    echo json_encode(['error' => 'DB connection failed']);
-    exit;
-}
+
 
 if (!isset($_GET['role'])) {
     echo json_encode(['error' => 'Missing role']);

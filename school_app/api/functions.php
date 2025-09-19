@@ -7,6 +7,11 @@ if (!in_array($_SESSION['role'], ['student', 'teacher', 'admin'])){
     header('Location: login.php');
 }
 
+$conn = new mysqli('localhost', 'root', '', 'school_app');
+if ($conn->connect_error) {
+    echo json_encode(['error' => 'DB connection failed']);
+    exit;
+}
 
 function getTerms($conn){
     $stmt = "SELECT * FROM terms";
@@ -18,7 +23,7 @@ function getTerms($conn){
     return $terms;   
 }
 
-function getStudentSubjects($conn, $student_id){
+function getStudentSubjects($conn,$student_id){
     $stmt = "SELECT id, name FROM subjects WHERE id IN (SELECT subject_id FROM class_subject WHERE class_id = (SELECT class_id FROM students WHERE id = $student_id))";
     $result = $conn->query($stmt);
     $subjects = [];
@@ -28,7 +33,7 @@ function getStudentSubjects($conn, $student_id){
     return $subjects;
 }
 
-function getStudentMarks($conn, $student_id,$subjects,$term){
+function getStudentMarks($conn,$student_id,$subjects,$term){
     $marks = [];
     foreach($subjects as $subject){
         $subject_id = $subject['id'];
@@ -113,7 +118,6 @@ function getAttendanceInfo($conn,$student_id){
         $att[] = $row;
     } 
     return $att;
-
 }
 
 function getReports($conn,$student_id){
@@ -126,7 +130,7 @@ function getReports($conn,$student_id){
     return $reports;
 }
 
-function getAccount($conn, $role, $user_id) {
+function getAccount($conn,$role, $user_id) {
     if ($user_id == 0) {
         $accounts = [];
         $sql = "SELECT * FROM users WHERE role = '$role'";
@@ -150,7 +154,7 @@ function getAccount($conn, $role, $user_id) {
     }
 }
 
-function getStudentTeachers($conn, $student_id){
+function getStudentTeachers($conn,$student_id){
     $sql = "
         SELECT DISTINCT *
         FROM teachers
@@ -177,7 +181,6 @@ function sendMessages ($conn,$reciver_id,$reciver_role,$message,$title,$type,$da
     return $result;
 }
 
-
 function getMessages($conn,$id,$role){
     $sql = "SELECT 
     m.*, 
@@ -199,8 +202,7 @@ WHERE m.receiver_role = '$role' AND m.receiver_id = $id;";
         }
     }
     return $messages;
-};
-
+}
 
 function dellAnnouncement($conn,$id){
     $sql = "DELETE FROM announcements WHERE `announcements`.`id` = $id";

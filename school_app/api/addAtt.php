@@ -12,11 +12,6 @@ if (!in_array($_SESSION['role'], ['teacher', 'admin'])) {
 
 require_once 'functions.php';
 
-$conn = new mysqli('localhost', 'root', '', 'school_app');
-if ($conn->connect_error) {
-    echo json_encode(['error' => 'DB connection failed']);
-    exit;
-}
 
 if (!isset($_POST['student_id']) || !is_numeric($_POST['student_id'])) {
     echo json_encode(['error' => 'Invalid or missing student_id']);

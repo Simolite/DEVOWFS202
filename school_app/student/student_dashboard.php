@@ -9,7 +9,7 @@ if ($_SESSION['role'] !== 'student') {
 }
 
 $linked_id = $_SESSION['linked_id'];
-$conn = new mysqli('localhost', 'root', '', 'school_app');
+require_once '../api/functions.php';
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
