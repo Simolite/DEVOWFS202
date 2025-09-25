@@ -16,11 +16,11 @@ require_once 'functions.php';
 if ($_SESSION['role'] === 'teacher') {
     $teacher_id = $_SESSION['linked_id'];
 } else {
-    if (!isset($_GET['teacher_id']) || !is_numeric($_GET['teacher_id'])) {
+    if (!isset($_GET['teacher_id'])) {
         echo json_encode(['error' => 'Invalid or missing teacher_id']);
         exit;
     }
-    $teacher_id = $_GET['teacher'];
+    $teacher_id = $_GET['teacher_id'];
 }
 
 $classes = getTeacherClasses($conn, $teacher_id);

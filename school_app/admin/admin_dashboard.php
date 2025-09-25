@@ -93,7 +93,6 @@ $conn->close();
                     <button id="notifaction" class="selected px-6 py-3 text-right font-semibold">الإشعارات</button>
                     <button id="messages" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الرسائل</button>
                     <button id="account" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الحسابات</button>
-                    <button id="announcement" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الإعلانات</button>
                     <button id="attendance" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الحضور</button>
                     <button id="class" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الفصول</button>
                     <button id="mark" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الدرجات</button>
@@ -138,12 +137,25 @@ $conn->close();
                     <!-- Dynamic selects will appear here -->
                     <div id="dynamicContainer"></div>
 
-                    <button type="submit"
+                    <button id="add_ann" type="submit"
                         class="px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700
                             focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
                         إضافة إشعار
                     </button>
                 </form>
+                <!-- Existing notifications table -->
+                <table class="w-full mt-6 border-collapse border border-gray-300">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="border p-2">العنوان</th>
+                            <th class="border p-2">النص</th>
+                            <th class="border p-2">التاريخ</th>
+                            <th class="border p-2">الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
             </main>
             <!-- Accounts Section -->
             <main id="account_section" class="bg-white rounded-xl card-shadow p-6 hidden">
@@ -155,13 +167,11 @@ $conn->close();
                         <option value="teacher">أستاذ</option>
                         <option value="admin">مسؤول</option>
                     </select>
-                    <select id="account" class="border p-2 rounded w-full">
+                    <select id="accountSelect" class="border p-2 rounded w-full">
                         <option value="0" selected disabled>اختر الحساب</option>
                     </select>
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">عرض الحساب</button>
                 </div>
                 <div class="flex space-x-4 space-x-reverse mb-4">
-                    <input id="userName" type="text" disabled class="border p-2 rounded w-full" placeholder="اسم المستخدم">
                     <input id="password" type="text" class="border p-2 rounded w-full" placeholder="كلمة المرور">
                 </div>
                 <div class="flex justify-between">
@@ -178,9 +188,13 @@ $conn->close();
                     <table class="w-full border">
                         <thead class="bg-gray-100">
                             <tr>
-                                <th class="p-2">المرسل</th>
-                                <th class="p-2">الموضوع</th>
-                                <th class="p-2">التاريخ</th>
+                        <tr>
+                            <th class="p-2">المرسل</th>
+                            <th class="p-2">العنوان</th>
+                            <th class="p-2">الموضوع</th>
+                            <th class="p-2">النوع</th>
+                            <th class="p-2">التاريخ</th>
+                        </tr>
                             </tr>
                         </thead>
                         <tbody id="messagesList"></tbody>
@@ -215,6 +229,50 @@ $conn->close();
                 </div>
             </main>
 
+            <!-- Attendance section-->
+
+            <main id="attendance_section" class="bg-white rounded-xl card-shadow p-6 hidden">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">  تسجيل الحضور</h3>
+                <div class="flex space-x-4 space-x-reverse mb-4">
+                    <select id="Attclass" class="border p-2 rounded">
+                        <option value="0" selected disabled>اختر القسم</option>
+                    </select>
+                    <select id="Attsub" class="border p-2 rounded">
+                        <option value="0" selected disabled>اختر المادة</option>
+                    </select>
+                    <button id="getAttList" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">عرض اللائحة</button>
+                </div>
+                <table class="w-full border mb-4">
+                    <thead class="bg-gray-100">
+                        <tr><th class="p-2">اسم الطالب</th><th class="p-2">غائب</th></tr>
+                    </thead>
+                    <tbody id="studentsAttList"></tbody>
+                </table>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <input id="Attdate" type="date" class="border p-2 rounded">
+                    <button id="submitAtt" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">حفظ</button>
+                </div>
+                <br>
+                <h3 class="text-xl font-bold text-gray-800 mb-6">  حذف الحضور</h3>
+                <div class="flex space-x-4 space-x-reverse mb-4">
+                    <select id="AttclassDell" class="border p-2 rounded">
+                        <option value="0" selected disabled>اختر القسم</option>
+                    </select>
+                    <select id="AttsubDell" class="border p-2 rounded">
+                        <option value="0" selected disabled>اختر الطالب</option>
+                    </select>
+                    <button id="getAttListDell" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">عرض اللائحة</button>
+                </div>
+                <table class="w-full border mb-4">
+                    <thead class="bg-gray-100">
+                        <tr><th class="p-2">المادة</th><th class="p-2">التاريخ</th><th class="p-2">حذف</th></tr>
+                    </thead>
+                    <tbody id="attDellTbody"></tbody>
+                </table>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <button id="submitAttDell" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">حذف</button>
+                </div>
+            </main>
         </div>
     </div>
 

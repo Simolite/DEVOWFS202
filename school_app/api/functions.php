@@ -112,7 +112,8 @@ function addAtt($conn,$student_id,$subject_id,$stat,$date){
 
 function getAttendanceInfo($conn,$student_id){
     $att = [];
-    $sql = "SELECT s.name AS subject_name, a.date AS date FROM attendance a JOIN subjects s ON a.subject_id = s.id WHERE a.student_id = $student_id AND a.status = 'absent' ORDER BY a.date DESC;";
+    $sql = "SELECT a.id AS attendance_id, s.name AS subject_name, a.date AS date FROM attendance a JOIN subjects s ON a.subject_id = s.id WHERE a.student_id = $student_id AND a.status = 'absent'ORDER BY a.date DESC;
+";
     $result = $conn->query($sql);
     while ($row = $result->fetch_assoc()){
         $att[] = $row;
@@ -206,6 +207,51 @@ WHERE m.receiver_role = '$role' AND m.receiver_id = $id;";
 
 function dellAnnouncement($conn,$id){
     $sql = "DELETE FROM announcements WHERE `announcements`.`id` = $id";
+    $conn->query($sql);
+}
+
+function addAnnouncement($conn, $title, $body, $date, $audience, $id) {
+    $sql = "INSERT INTO announcements (title, body, created_at, audience, class_id) 
+            VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssi", $title, $body, $date, $audience, $id);
+    return $stmt->execute();
+}
+
+function getClasses($conn){
+    $sql ="SELECT * FROM classes";
+    $result = $conn->query($sql);
+    $classes = [];
+    if($result){
+        while($row = $result->fetch_assoc()){
+            $classes[] = $row;
+        };
+    };
+    return $classes;
+}
+
+function getTeachers($conn){
+    $sql ="SELECT * FROM teachers";
+    $result = $conn->query($sql);
+    $teachers = [];
+    if($result){
+        while($row = $result->fetch_assoc()){
+            $teachers[] = $row;
+        };
+    };
+    return $teachers;
+}
+
+function changePassword($conn, $pass, $user_id) {
+    $sql = "UPDATE `users` SET `password` = ? WHERE `id` = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $pass, $user_id);
+
+    return $stmt->execute();
+}
+
+function dellAttendance($conn,$id){
+    $sql = "DELETE FROM attendance WHERE `attendance`.`id` = $id";
     $conn->query($sql);
 }
 ?>

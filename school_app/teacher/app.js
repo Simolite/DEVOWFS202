@@ -1,7 +1,3 @@
-
-
-
-
 async function getClasses(dest) {
 
     let url = `../api/getTeacherClasses.php`;
@@ -83,7 +79,7 @@ async function getTerms(){
         document.querySelector("#term").appendChild(option);
     });
 };
-
+ 
 getClasses('Markclass');
 getClasses('Attclass');
 
