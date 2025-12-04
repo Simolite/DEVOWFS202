@@ -98,7 +98,7 @@ $conn->close();
             <!-- Navigation -->
             <div class="bg-white rounded-xl card-shadow mt-6">
                 <div class="flex flex-col divide-y divide-gray-200">
-                    <button id="notifaction" class="selected px-6 py-3 text-right font-semibold">الإشعارات</button>
+                    <button id="notifaction" class="selected px-6 py-3 text-right font-semibold hover:text-blue-600">الإشعارات</button>
                     <button id="messages" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الرسائل</button>
                     <button id="account" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الحسابات</button>
                     <button id="attendance" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الحضور</button>
