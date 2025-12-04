@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if ($_SESSION['role'] !== 'teacher') {
-    header('Location: login.php');
+    header('Location: ../login/login.php');
     exit;
 }
 
@@ -31,22 +31,25 @@ if ($result->num_rows > 0) {
 }
 $teacherStudents = [];
 
-foreach ($classes as $Tclass) {
-    $Tid = $Tclass['id'];
-    $sql = "SELECT * FROM students WHERE class_id = $Tid;";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $teacherStudents[] = $row;
-        }
+
+$sql = "SELECT * FROM students";
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $teacherStudents[] = $row;
     }
-}
+}; 
+
+
+
 
 $sql = "SELECT url FROM time_table WHERE teacher_id = '$linked_id'";
 $result = $conn->query($sql);
 $time_table = $result->fetch_assoc();
+if (!$time_table) {
+    $time_table['url'] = '../logo.png';
+}
 $url = $time_table['url'];
-
 $sql = "SELECT * FROM subjects JOIN subject_teacher ON subjects.id = subject_teacher.subject_id WHERE subject_teacher.teacher_id = $linked_id;";
 $result = $conn->query($sql);
 $subjects = [];
@@ -109,7 +112,7 @@ $classes
         <div class="lg:col-span-1">
             <div class="bg-white rounded-xl card-shadow p-6 text-center">
                 <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-purple-600 flex items-center justify-center text-4xl font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                    <span><?php echo $fname[0].'.'.$lname[0] ?></span>
+                    <span><?php echo mb_substr($user['fname'], 0, 1, "UTF-8") .'.'.mb_substr($user['lname'], 0, 1, "UTF-8")?></span>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800"><?php echo $fname.' '.$lname ?></h2>
                 <p class="text-blue-600 font-semibold">أستاذ(ة)  <?php

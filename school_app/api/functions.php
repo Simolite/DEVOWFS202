@@ -48,7 +48,11 @@ function getStudentMarks($conn,$student_id,$subjects,$term){
 
 function getTeacherSubjects($conn,$teacher_id){
     $subs = [];
-    $sql = "SELECT id , name FROM subject_teacher st INNER JOIN subjects s ON st.subject_id = id WHERE st.teacher_id = $teacher_id";
+    if ($teacher_id == 'all'){
+        $sql = "SELECT id , name FROM subject_teacher st INNER JOIN subjects s ON st.subject_id = id WHERE 1";
+    }else {
+        $sql = "SELECT id , name FROM subject_teacher st INNER JOIN subjects s ON st.subject_id = id WHERE st.teacher_id = $teacher_id";
+    }
     $result = $conn->query($sql);
     while ($row = $result->fetch_assoc()) {
         $subs[]= $row;
@@ -84,11 +88,11 @@ function addMark($conn,$student_id,$subject_id,$mark,$term_id,$date){
 function getAnnouncements($conn,$audience,$class_id=0){
     $announcements = [];
     if($class_id==0){
-        $sql = "SELECT * FROM announcements WHERE audience = '$audience'";
+        $sql = "SELECT * FROM announcements WHERE audience = '$audience' OR audience = 'all'";
     }elseif($class_id=='all'){
         $sql = "SELECT * FROM announcements";
     }else{
-        $sql = "SELECT * FROM announcements WHERE audience = '$audience' OR class_id = $class_id";
+        $sql = "SELECT * FROM announcements WHERE audience = '$audience' OR linked_id = '$class_id' OR audience = 'all'";
     }
     $result = $conn->query($sql);
     while ($row = $result->fetch_assoc()){
@@ -176,11 +180,38 @@ function getStudentTeachers($conn,$student_id){
     return $teachers;
 }
 
-function sendMessages ($conn,$reciver_id,$reciver_role,$message,$title,$type,$date,$sender_id,$sender_role){
-    $sql = "INSERT INTO `messages`(`sender_id`, `receiver_id`, `message`, `sent_at`, `sender_role`, `receiver_role`, `title`, `type`) VALUES ('$sender_id','$reciver_id','$message','$date','$sender_role','$reciver_role','$title','$type')";
-    $result = $conn->query($sql);
+function sendMessages($conn, $receiver_id, $receiver_role, $message, $title, $type, $sender_id, $sender_role) {
+    $sql = "INSERT INTO messages 
+        (sender_id, receiver_id, message, sender_role, receiver_role, title, type)
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Prepare failed: " . $conn->error);
+    }
+
+    $stmt->bind_param(
+        "iisssss",
+        $sender_id,
+        $receiver_id,
+        $message,
+        $sender_role,
+        $receiver_role,
+        $title,
+        $type
+    );
+
+    $result = $stmt->execute();
+    
+    if (!$result) {
+        throw new Exception("Execute failed: " . $stmt->error);
+    }
+
+    $stmt->close();
     return $result;
 }
+
+
 
 function getMessages($conn,$id,$role){
     $sql = "SELECT 
@@ -211,7 +242,7 @@ function dellAnnouncement($conn,$id){
 }
 
 function addAnnouncement($conn, $title, $body, $date, $audience, $id) {
-    $sql = "INSERT INTO announcements (title, body, created_at, audience, class_id) 
+    $sql = "INSERT INTO announcements (title, body, created_at, audience, linked_id) 
             VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssi", $title, $body, $date, $audience, $id);
@@ -219,7 +250,11 @@ function addAnnouncement($conn, $title, $body, $date, $audience, $id) {
 }
 
 function getClasses($conn){
-    $sql ="SELECT * FROM classes";
+    $sql ="SELECT classes.*, time_table.url AS timetable_url
+FROM classes
+LEFT JOIN time_table
+    ON classes.timetable_id = time_table.id;
+";
     $result = $conn->query($sql);
     $classes = [];
     if($result){
@@ -254,4 +289,212 @@ function dellAttendance($conn,$id){
     $sql = "DELETE FROM attendance WHERE `attendance`.`id` = $id";
     $conn->query($sql);
 }
+
+function dellMark($conn,$id){
+    $sql = "DELETE FROM marks WHERE `marks`.`id` = $id";
+    $conn->query($sql);
+}
+
+
+function createClass($conn, $className) {
+    if (!$conn || $conn->connect_error) {
+        error_log("Database connection error: " . ($conn->connect_error ?? 'Unknown'));
+        return false;
+    }
+    
+    $conn->begin_transaction();
+    
+    try {
+        // Check if class name already exists
+        $checkStmt = $conn->prepare("SELECT id FROM classes WHERE name = ?");
+        $checkStmt->bind_param("s", $className);
+        $checkStmt->execute();
+        $checkStmt->store_result();
+        
+        if ($checkStmt->num_rows > 0) {
+            $checkStmt->close();
+            throw new Exception("Class name already exists");
+        }
+        $checkStmt->close();
+        
+        // Create timetable
+        if (!$conn->query("INSERT INTO time_table (url) VALUES ('')")) {
+            throw new Exception("Failed to create timetable: " . $conn->error);
+        }
+        $timetableId = $conn->insert_id;
+        
+        // Create class
+        $classStmt = $conn->prepare("INSERT INTO classes (name, timetable_id) VALUES (?, ?)");
+        $classStmt->bind_param("si", $className, $timetableId);
+        
+        if (!$classStmt->execute()) {
+            throw new Exception("Failed to create class: " . $classStmt->error);
+        }
+        $classId = $conn->insert_id;
+        $classStmt->close();
+        
+        // Insert all teachers for this class
+        $teacherStmt = $conn->prepare("
+            INSERT INTO class_teacher (class_id, teacher_id) 
+            SELECT ? as class_id, id as teacher_id FROM teachers
+        ");
+        $teacherStmt->bind_param("i", $classId);
+        
+        if (!$teacherStmt->execute()) {
+            throw new Exception("Failed to assign teachers to class: " . $teacherStmt->error);
+        }
+        $teacherStmt->close();
+        
+        // Insert all subjects for this class
+        $subjectStmt = $conn->prepare("
+            INSERT INTO class_subject (class_id, subject_id) 
+            SELECT ? as class_id, id as subject_id FROM subjects
+        ");
+        $subjectStmt->bind_param("i", $classId);
+        
+        if (!$subjectStmt->execute()) {
+            throw new Exception("Failed to assign subjects to class: " . $subjectStmt->error);
+        }
+        $subjectStmt->close();
+        
+        $conn->commit();
+        return true;
+        
+    } catch (Exception $e) {
+        $conn->rollback();
+        error_log("Create class error: " . $e->getMessage());
+        return false;
+    }
+}
+
+function editClass($conn, $id, $name, $timetable_url) {
+    // Validate inputs
+    if (empty($id) || empty($name)) {
+        error_log("Invalid input parameters for editClass");
+        return false;
+    }
+    
+    // Check if timetable_url is null, set to empty string if needed
+    if ($timetable_url === null) {
+        $timetable_url = '';
+    }
+    
+    $sql = "UPDATE classes c
+            JOIN time_table t ON c.timetable_id = t.id
+            SET c.name = ?,
+                t.url = ?
+            WHERE c.id = ?";
+    
+    try {
+        $stmt = $conn->prepare($sql);
+        
+        if (!$stmt) {
+            error_log("Prepare statement failed: " . $conn->error);
+            return false;
+        }
+        
+        $stmt->bind_param("ssi", $name, $timetable_url, $id);
+        $result = $stmt->execute();
+        
+        if (!$result) {
+            error_log("Execute failed: " . $stmt->error);
+            return false;
+        }
+        
+        $stmt->close();
+        return $result;
+        
+    } catch (Exception $e) {
+        error_log("editClass error: " . $e->getMessage());
+        return false;
+    }
+}
+
+function addStudent($conn, $fname, $lname, $email, $sex, $birth_date, $class_id, $pfname, $plname, $phone) {
+    try {
+        // Start transaction
+        $conn->begin_transaction();
+        
+        // 1. Insert parent
+        $sql = "INSERT INTO parents (fname, lname, phone, email) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new Exception("Parent prepare failed: " . $conn->error);
+        }
+        
+        $stmt->bind_param("ssss", $pfname, $plname, $phone, $email);
+        
+        if (!$stmt->execute()) {
+            throw new Exception("Parent insert failed: " . $stmt->error);
+        }
+        
+        $parent_id = $conn->insert_id;
+        $stmt->close();
+        
+        // 2. Insert student
+        $sql = "INSERT INTO students (fname, lname, sex, birth_date, class_id, parent_id) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        
+        if (!$stmt) {
+            throw new Exception("Student prepare failed: " . $conn->error);
+        }
+        
+        // Make sure $class_id and $parent_id are integers
+        $class_id_int = (int)$class_id;
+        $parent_id_int = (int)$parent_id;
+        
+        $stmt->bind_param("ssssii", 
+            $fname, 
+            $lname, 
+            $sex, 
+            $birth_date, 
+            $class_id_int, 
+            $parent_id_int
+        );
+        
+        if (!$stmt->execute()) {
+            throw new Exception("Student insert failed: " . $stmt->error);
+        }
+        
+        $stmt->close();
+        
+        // Commit transaction
+        $conn->commit();
+        return true;
+        
+    } catch (Exception $e) {
+        // Rollback on error
+        $conn->rollback();
+        error_log("addStudent Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+
+function getParents($conn){
+    $parents = [];
+    $sql = "SELECT * FROM parents";
+    $result = $conn->query($sql);
+    while ($row = $result->fetch_assoc()){
+        $parents[] = $row;
+    } 
+    return $parents;
+}
+
+function getParent($conn,$id){
+    $sql = "SELECT * FROM parents WHERE id = $id";
+    $result = $conn->query($sql);
+    $parent = $result->fetch_assoc();
+    return $parent;
+}
+
+
+function editParent($conn ,$parentId, $parentFname, $parentLname, $parentPhone, $parentEmail){
+    $sql = "UPDATE parents SET fname = ?, lname = ?, phone = ?, email = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssi", $parentFname, $parentLname, $parentPhone, $parentEmail, $parentId);
+    return $stmt->execute();
+}
+
 ?>

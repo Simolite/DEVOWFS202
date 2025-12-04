@@ -24,6 +24,9 @@ $fname = $user['fname'];
 $sql = "SELECT url FROM time_table WHERE teacher_id = '$linked_id'";
 $result = $conn->query($sql);
 $time_table = $result->fetch_assoc();
+if (!$time_table) {
+    $time_table['url'] = '../logo.png';
+}
 $url = $time_table['url'];
 
 $parent_id = $user['parent_id'];
@@ -34,7 +37,7 @@ $parent = $result->fetch_assoc();
 $sex = $user['sex'];
 $user_id = $user['id'];
 
-$sql = "SELECT * FROM classes WHERE id = '$user_id'";
+$sql = "SELECT * FROM classes WHERE id = $user[class_id]";
 $result = $conn->query($sql);
 $class = $result->fetch_assoc();
 ?>
@@ -78,7 +81,7 @@ $class = $result->fetch_assoc();
         <div class="lg:col-span-1">
             <div class="bg-white rounded-xl card-shadow p-6 text-center">
                 <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-blue-500 flex items-center justify-center text-4xl font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                    <span><?php echo $user['fname'][0].'.'.$user['lname'][0] ?></span>
+                    <span><?php echo mb_substr($user['fname'], 0, 1, "UTF-8") .'.'.mb_substr($user['lname'], 0, 1, "UTF-8") ?></span>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800"><?php echo $user['fname'].' '.$user['lname'] ?></h2>
                 <p class="text-blue-600 font-semibold"><?php echo $class['name'] ?></p>
