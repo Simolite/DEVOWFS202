@@ -1178,3 +1178,4 @@ document.getElementById("add_parent").addEventListener('click',()=>{
 
     updateParent(id,fname,lname,phone,email);
 });
+
