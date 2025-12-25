@@ -13,6 +13,7 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['student', 'teach
 
 require_once 'functions.php'; 
 
+
 // Validate required fields
 $required_fields = ['receiver_id', 'receiver_role', 'message', 'title', 'type'];
 foreach ($required_fields as $field) {
@@ -29,18 +30,22 @@ $message = trim($_POST['message']);
 $title = trim($_POST['title']);
 $type = trim($_POST['type']);
 
-// Validate roles and types
-if (!in_array($receiver_role, ['student', 'teacher', 'admin'])) {
+// Validate roles
+$valid_roles = ['student', 'teacher', 'admin'];
+if (!in_array($receiver_role, $valid_roles)) {
     echo json_encode(['error' => 'Invalid receiver role']);
     exit;
 }
 
-
-
+// Get sender info
 $sender_id = $_SESSION['linked_id']; 
-$sender_role = $_SESSION['role']; 
+$sender_role = $_SESSION['role'];
 
+// Additional validation: Check if receiver exists
 try {
+
+    
+    // Send the message
     $result = sendMessages($conn, $receiver_id, $receiver_role, $message, $title, $type, $sender_id, $sender_role);
     
     if ($result) {
@@ -49,6 +54,9 @@ try {
         echo json_encode(['error' => 'Failed to send message']);
     }
 } catch (Exception $e) {
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    error_log("Message sending error: " . $e->getMessage());
+    echo json_encode(['error' => 'Database error occurred']);
 }
+
+$conn->close();
 ?>

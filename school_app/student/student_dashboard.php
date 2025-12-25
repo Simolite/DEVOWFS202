@@ -21,7 +21,7 @@ $user = $result->fetch_assoc();
 
 $fname = $user['fname'];
 
-$sql = "SELECT url FROM time_table WHERE teacher_id = '$linked_id'";
+$sql = "SELECT * FROM time_table";
 $result = $conn->query($sql);
 $time_table = $result->fetch_assoc();
 if (!$time_table) {

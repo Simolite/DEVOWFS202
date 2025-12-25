@@ -1,4 +1,7 @@
 <?php
+
+require_once 'conn.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,11 +10,6 @@ if (!in_array($_SESSION['role'], ['student', 'teacher', 'admin'])){
     header('Location: login.php');
 }
 
-$conn = new mysqli('localhost', 'root', '', 'school_app');
-if ($conn->connect_error) {
-    echo json_encode(['error' => 'DB connection failed']);
-    exit;
-}
 
 function getTerms($conn){
     $stmt = "SELECT * FROM terms";
@@ -81,7 +79,7 @@ function getClassStudents($conn,$class_id){
 }
 
 function addMark($conn,$student_id,$subject_id,$mark,$term_id,$date){
-    $sql = "INSERT INTO marks (student_id, subject_id, mark, exam_date, term_id) VALUES ($student_id, $subject_id, $mark, '$date', $term_id)";
+    $sql = "INSERT INTO marks (student_id, subject_id, mark, exam_date, term_id) VALUES ($student_id, $subject_id, '$mark', '$date', $term_id)";
     $conn->query($sql);
 }
 
@@ -497,4 +495,25 @@ function editParent($conn ,$parentId, $parentFname, $parentLname, $parentPhone, 
     return $stmt->execute();
 }
 
+
+function deleteClass($conn, $class_id){
+    $sql = "DELETE FROM classes WHERE id = $class_id";
+    $conn->query($sql);
+}
+
+
+function getStudentInfo($conn,$id){
+    $sql = "SELECT s.*, p.fname AS parent_fname, p.lname AS parent_lname, p.phone AS parent_phone, p.email AS parent_email
+    FROM students s
+    LEFT JOIN parents p ON s.parent_id = p.id
+    WHERE s.id = $id";
+    $result = $conn->query($sql);
+    $student = $result->fetch_assoc();
+    return $student;
+}
+
+function deleteStudent($conn,$id){
+    $sql = "DELETE FROM `students` WHERE `students`.`id` = $id";
+    $conn->query($sql);
+}
 ?>

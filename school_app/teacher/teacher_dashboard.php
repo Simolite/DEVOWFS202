@@ -43,7 +43,7 @@ if ($result->num_rows > 0) {
 
 
 
-$sql = "SELECT url FROM time_table WHERE teacher_id = '$linked_id'";
+$sql = "SELECT * FROM time_table";
 $result = $conn->query($sql);
 $time_table = $result->fetch_assoc();
 if (!$time_table) {
@@ -194,7 +194,15 @@ $classes
                     </select>
                 </div>
                 <div class="flex items-center space-x-4 space-x-reverse">
-                    <input id="mark" type="number" class="border p-2 rounded" placeholder="الدرجة">
+                <select name="markToSubmit" id="markToSubmit" class="border p-2 rounded pr-4">
+                    <option value="0" selected disabled>الدرجة</option>
+                    <option value="ضعيف"> ضعيف</option>
+                    <option value="متوسط"> متوسط</option>
+                    <option value="لاباس">لاباس</option>
+                    <option value="جيد">جيد</option>
+                    <option value="جيد جدا">جيد جدا</option>
+                    <option value="ممتاز">ممتاز</option>
+                </select>
                     <input id="Markdate" type="date" class="border p-2 rounded">
                     <button id="Marksubmit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">حفظ</button>
                 </div>

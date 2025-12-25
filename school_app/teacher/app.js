@@ -471,47 +471,59 @@ async function getTeacherClasses() {
 
 }
 
-async function sendMessage(){
-    let reciver_role = document.getElementById("recipient_role").value;
-    let reciver_id;
+async function sendMessage() {
+    let receiver_role = document.getElementById("recipient_role").value;
+    let receiver_id;
     let message;
     let title;
     let type;
-    if(reciver_role == 'admin'){
-        reciver_id = 1;
-    }else if (reciver_role == 'teacher'){
-        reciver_id = document.getElementById("recipient").value;
-    }else if (reciver_role == 'student'){
-        reciver_id = document.getElementById("Srecipient").value;
+    
+    if (receiver_role == 'admin') {
+        receiver_id = 1;
+    } else if (receiver_role == 'teacher') {
+        receiver_id = document.getElementById("recipient").value;
+    } else if (receiver_role == 'student') {
+        receiver_id = document.getElementById("Srecipient").value;
     }
+    
     message = document.getElementById("messageContent").value;
     title = document.getElementById("message_subject").value;
     type = document.getElementById("messageType").value;
-    console.log(reciver_role,reciver_id,message,title,type);
+    
 
 
     const url = "../api/sendMessages.php";
 
     const formData = new FormData();
-    formData.append("reciver_id", reciver_id);
-    formData.append("reciver_role", reciver_role);
+    formData.append("receiver_id", receiver_id);  // Fixed typo
+    formData.append("receiver_role", receiver_role);  // Fixed typo
     formData.append("message", message);
     formData.append("title", title);
     formData.append("type", type);
 
-    let data;
     try {
-    let response = await fetch(url, {
-        method: "POST",
-        body: formData
-    });
+        let response = await fetch(url, {
+            method: "POST",
+            body: formData
+        });
 
-    data = await response.json();
+        let data = await response.json();  // Changed to json() since PHP returns JSON
+        
+        // Show success/error message to user
+        if (data.success) {
+            alert('Message sent successfully!');
+            // Clear form or redirect
+            document.getElementById("messageContent").value = "";
+            document.getElementById("message_subject").value = "";
+        } else {
+            alert('Error: ' + data.error);
+        }
+        
     } catch (error) {
-    console.error("Error sending message:", error?.message || error);
+        console.error("Error sending message:", error?.message || error);
+        alert('Network error occurred. Please try again.');
     }
 }
-
 document.getElementById("submitMessage").addEventListener("click", (e)=>{
     e.preventDefault();
     sendMessage();

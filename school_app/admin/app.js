@@ -362,7 +362,7 @@ async function getStudents(dest) {
     } catch (error) {
         console.error("Error fetching students:", error?.message || error);
     }
-    if(dest == 'Attclass'||dest == 'AttclassDell'||dest == "Markclass"){
+    if(dest == 'Attclass'||dest == 'AttclassDell'||dest == "Markclass" || dest == "studentInfoSelectClass" || dest == "ClassSelectStudentDelete"){
         return data;
     }else{
         data.forEach(student => {
@@ -851,38 +851,58 @@ async function dellMark(mark_id){
 
 const showCreate = document.getElementById('showCreate');
 const showEdit = document.getElementById('showEdit');
+const showDelete = document.getElementById('showDelete');
 const createSection = document.getElementById('createSection');
 const editSection = document.getElementById('editSection');
+const deleteSection = document.getElementById('deleteSection');
 
 function activateTab(tab) {
     if (tab === 'create') {
+        deleteSection.classList.add('hidden');
         createSection.classList.remove('hidden');
         editSection.classList.add('hidden');
 
-        // Activate create tab
-        showCreate.classList.add('bg-gray-50', 'text-gray-800'); // active bg & text
-        showCreate.classList.remove('bg-gray-100', 'text-gray-600'); // remove inactive classes
+        showCreate.classList.add('bg-gray-50', 'text-gray-800');
+        showDelete.classList.remove('bg-gray-100', 'text-gray-600');
 
-        // Deactivate edit tab
-        showEdit.classList.add('bg-gray-100', 'text-gray-600'); // inactive bg & text
-        showEdit.classList.remove('bg-gray-50', 'text-gray-800'); // remove active classes
-    } else {
-        editSection.classList.remove('hidden');
+        showDelete.classList.add('bg-gray-100', 'text-gray-600');
+        showDelete.classList.remove('bg-gray-50', 'text-gray-800');
+
+        showEdit.classList.add('bg-gray-100', 'text-gray-600');
+        showEdit.classList.remove('bg-gray-50', 'text-gray-800');
+    } else if (tab === 'edit') {
+        deleteSection.classList.add('hidden');
         createSection.classList.add('hidden');
+        editSection.classList.remove('hidden');
 
-        // Activate edit tab
         showEdit.classList.add('bg-gray-50', 'text-gray-800');
         showEdit.classList.remove('bg-gray-100', 'text-gray-600');
 
-        // Deactivate create tab
+        showDelete.classList.add('bg-gray-100', 'text-gray-600');
+        showDelete.classList.remove('bg-gray-50', 'text-gray-800');
+
         showCreate.classList.add('bg-gray-100', 'text-gray-600');
         showCreate.classList.remove('bg-gray-50', 'text-gray-800');
+    } else if (tab === 'delete') {
+        deleteSection.classList.remove('hidden');
+        createSection.classList.add('hidden');
+        editSection.classList.add('hidden');
+
+        showDelete.classList.add('bg-gray-50', 'text-gray-800');
+        showDelete.classList.remove('bg-gray-100', 'text-gray-600');
+
+        showCreate.classList.add('bg-gray-100', 'text-gray-600');
+        showCreate.classList.remove('bg-gray-50', 'text-gray-800');
+
+        showEdit.classList.add('bg-gray-100', 'text-gray-600');
+        showEdit.classList.remove('bg-gray-50', 'text-gray-800');
     }
 }
 
 
 showCreate.addEventListener('click', () => activateTab('create'));
 showEdit.addEventListener('click', () => activateTab('edit'));
+showDelete.addEventListener('click', () => activateTab('delete'));
 
 
 document.getElementById("add_class").addEventListener('click', () => {
@@ -1179,3 +1199,151 @@ document.getElementById("add_parent").addEventListener('click',()=>{
     updateParent(id,fname,lname,phone,email);
 });
 
+document.getElementById("classDelete").addEventListener('click',()=>{
+    let class_id = document.getElementById("deleteClassSelect").value;
+    if(!class_id){
+        alert("Please select a class to delete");
+        return;
+    }
+    if(!confirm("Are you sure you want to delete this class? This action cannot be undone.")){
+        return;
+    }
+    deleteClass(class_id);
+    console.log(class_id);
+    
+});
+
+
+async function deleteClass(class_id){
+    let url = `../api/deleteClass.php?id=${encodeURIComponent(class_id)}`;
+    try{
+        let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        let data = await response.text();
+        console.log(data);
+        
+        if(data.error){
+            alert("Error deleting class: " + data.error);
+            return;
+        }else{
+            alert("Class deleted successfully!");
+        }
+    }catch (error) {
+        console.error("Error deleting class:", error?.message || error);
+        alert("Error deleting class:", error?.message || error);
+    }
+}
+populateClassSelect("deleteClassSelect");
+populateClassSelect("studentInfoSelectClass");
+
+async function populateStudentInfoSelect(){
+    console.log("hi");
+    
+    let students = await getStudents("studentInfoSelectClass");
+    students.forEach(stud => {
+        let option = document.createElement('option');
+        option.value = stud.id;
+        option.innerText = `${stud.fname} ${stud.lname}`;
+        document.querySelector("#studentInfoSelectStudent").appendChild(option);
+    });
+}
+
+document.getElementById("studentInfoSelectClass").addEventListener('change', async ()=>{
+    document.getElementById("studentInfoSelectStudent").innerHTML = '<option value="0" selected disabled>اختر wa الطالب</option>';
+    await populateStudentInfoSelect();
+});
+
+async function showStudentInfo(){
+    let student_id = document.getElementById("studentInfoSelectStudent").value;
+    let url = `../api/getStudentInfo.php?id=${encodeURIComponent(student_id)}`;
+    let data;
+    
+    try {
+        let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        data = await response.json();        
+        document.getElementById("showFname").value = data.fname;
+        document.getElementById("showLname").value = data.lname;
+        document.getElementById("showDOB").value = data.birth_date;
+        document.getElementById("showSex").value = data.sex;
+        document.getElementById("showParentFname").value = data.parent_fname;
+        document.getElementById("showParentLname").value = data.parent_lname;
+        document.getElementById("showParentPhone").value = data.parent_phone;
+        document.getElementById("showParentEmail").value = data.email;
+    } catch (error) {
+        console.error("Error fetching Student Info:", error?.message || error);
+    }
+}
+
+document.getElementById("studentInfoSelectStudent").addEventListener('change',async ()=>{
+    await showStudentInfo();
+});
+
+
+populateClassSelect("ClassSelectStudentDelete");
+
+async function populateStudentInfoSelect(){
+    let students = await getStudents("ClassSelectStudentDelete");
+    students.forEach(stud => {
+        let option = document.createElement('option');
+        option.value = stud.id;
+        option.innerText = `${stud.fname} ${stud.lname}`;
+        document.querySelector("#StudentSelectStudentDelete").appendChild(option);
+    });
+}
+
+document.getElementById("ClassSelectStudentDelete").addEventListener('change', async ()=>{
+    document.getElementById("StudentSelectStudentDelete").innerHTML = '<option value="0" selected disabled>اختر الطالب</option>';
+    await populateStudentInfoSelect();
+});
+
+document.getElementById("deleteStudentBtn").addEventListener('click',async ()=>{
+    let student_id = document.getElementById("StudentSelectStudentDelete").value;
+    if(!student_id){
+        alert("Please select a student to delete");
+        return;
+    }
+    if(!confirm("Are you sure you want to delete this student? This action cannot be undone.")){
+        return;
+    }
+    await deleteStudentApi(student_id);
+    alert("Student deleted successfully!");
+    document.getElementById("StudentSelectStudentDelete").innerHTML = '<option value="0" selected disabled>اختر الطالب</option>';
+    await populateStudentInfoSelect();
+});
+
+async function deleteStudentApi(student_id){
+    let url = `../api/deleteStudent.php?id=${encodeURIComponent(student_id)}`;
+    try{
+        let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        let data = await response.json();
+        
+        if(data.error){
+            alert("Error deleting student: " + data.error);
+            return;
+        }
+    }catch (error) {
+        console.error("Error deleting student:", error?.message || error);
+        alert("Error deleting student:", error?.message || error);
+    }
+}
+
+let StudentAddSection = document.getElementById("studentAddSection");
+let StudentDellSection = document.getElementById("studentDeleteSection");
+let StudentInfoSection = document.getElementById("studentInfoSection");
+
+document.getElementById("addStudentTab").addEventListener('click',()=>{
+    StudentAddSection.classList.remove('hidden');
+    StudentDellSection.classList.add('hidden');
+    StudentInfoSection.classList.add('hidden');
+});
+
+document.getElementById("deleteStudentTab").addEventListener('click',()=>{
+    StudentAddSection.classList.add('hidden');
+    StudentDellSection.classList.remove('hidden');
+    StudentInfoSection.classList.add('hidden');
+});
+
+document.getElementById("studentInfoTab").addEventListener('click',()=>{
+    StudentAddSection.classList.add('hidden');
+    StudentDellSection.classList.add('hidden');
+    StudentInfoSection.classList.remove('hidden');
+});

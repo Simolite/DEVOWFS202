@@ -287,7 +287,7 @@ $conn->close();
                 </div>
             </main>
 
-            <!-- ✅ Class Section (Fixed Tabs) -->
+            
             <main id="class_section" class="bg-white rounded-xl card-shadow p-6 relative hidden">
 
                 <!-- Top-right Tabs -->
@@ -299,6 +299,10 @@ $conn->close();
                 <button id="showEdit"
                     class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">
                     تعديل قسم
+                </button>
+                <button id="showDelete"
+                    class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">
+                    حذف قسم
                 </button>
                 </div>
 
@@ -323,6 +327,16 @@ $conn->close();
                         <button id="classSubmit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">حفظ</button>
                     </div>
                 </div>
+                <!-- Delete Section -->
+                <div id="deleteSection" class="hidden pt-16">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <h4 class="text-xl font-bold text-gray-800 mb-6">اختر القسم</h4>
+                        <select name="class" id="deleteClassSelect" class="border p-2 rounded">
+                            <option value="0" selected disabled>اختر القسم</option>
+                        </select>
+                        <button id="classDelete" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">حذف</button>
+                    </div>
+                </div>
 
             </main>
 
@@ -344,7 +358,15 @@ $conn->close();
                 </div>
                 <h3 class="text-xl font-bold text-gray-800 mb-6">إدخال الدرجات</h3>
                 <div class="flex items-center space-x-4 space-x-reverse">
-                    <input id="markToSubmit" type="number" class="border p-2 rounded" placeholder="الدرجة">
+                <select name="markToSubmit" id="markToSubmit" class="border p-2 rounded pr-4">
+                    <option value="0" selected disabled>الدرجة</option>
+                    <option value="ضعيف"> ضعيف</option>
+                    <option value="متوسط"> متوسط</option>
+                    <option value="لاباس">لاباس</option>
+                    <option value="جيد">جيد</option>
+                    <option value="جيد جدا">جيد جدا</option>
+                    <option value="ممتاز">ممتاز</option>
+                </select>
                     <input id="Markdate" type="date" class="border p-2 rounded">
                     <button id="SubmitMark" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">حفظ</button>
                 </div>
@@ -365,36 +387,97 @@ $conn->close();
             </main>
 
             <!-- Students Section-->
-            <main id="student_section" class="bg-white rounded-xl card-shadow p-6 hidden grid grid-rows-2 gap-4">
-                <h3 class="text-xl font-bold text-gray-800 mb-6">إدارة الطلاب</h3>
-                <h4 class="text-lg font-semibold text-gray-700 mb-4">معلومات الطالب</h4>
-                <select id="studentClassSelect" class="border p-2 rounded">
-                    <option value="0" selected disabled>اختر القسم</option>
-                </select>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <input id="studentFname" type="text" class="border p-2 rounded" placeholder="الاسم">
-                    <input id="studentLname" type="text" class="border p-2 rounded" placeholder="اللقب">
-                    <input id="studentDOB" type="date" class="border p-2 rounded" placeholder="تاريخ الميلاد">
-                    <select id="studentSex" class="border p-2 rounded">
-                        <option value="0" selected disabled>اختر الجنس</option>
-                        <option value="ذكر">ذكر</option>
-                        <option value="أنثى">أنثى</option>
-                    </select>
+            <main id="student_section" class="bg-white rounded-xl card-shadow p-6 relative hidden">
 
+                <div class="absolute top-0 right-0 flex">
+                <button id="addStudentTab"
+                    class="tab-active px-6 py-3 font-semibold text-gray-800 bg-gray-50 border-b-2 border-blue-600 rounded-t-lg shadow-sm">
+                   إضافة طالب
+                </button>
+                <button id="studentInfoTab"
+                    class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">
+                    معلومات طالب
+                </button>
+                <button id="deleteStudentTab"
+                    class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">
+                    حذف طالب
+                </button>
                 </div>
-                <h4 class="text-lg font-semibold text-gray-700 mb-4">معلومات ولي الأمر</h4>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <input id="parentFname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأول">
-                    <input id="parentLname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأخير">
-                    <input id="parentPhone" type="tel" class="border p-2 rounded" placeholder="هاتف ولي الأمر">
-                    <input id="parentEmail" type="email" class="border p-2 rounded" placeholder="بريد ولي الأمر الإلكتروني">
+                <!-- Add Student Section -->
+                <div id="studentAddSection" class="">
+
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4 mt-12">معلومات الطالب :</h4>
+                    <select id="studentClassSelect" class="border p-2 rounded mt-2 mb-4">
+                        <option value="0" selected disabled>اختر القسم</option>
+                    </select>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <input id="studentFname" type="text" class="border p-2 rounded" placeholder="الاسم">
+                        <input id="studentLname" type="text" class="border p-2 rounded" placeholder="اللقب">
+                        <input id="studentDOB" type="date" class="border p-2 rounded" placeholder="تاريخ الميلاد">
+                        <select id="studentSex" class="border p-2 rounded">
+                            <option value="0" selected disabled>اختر الجنس</option>
+                            <option value="ذكر">ذكر</option>
+                            <option value="أنثى">أنثى</option>
+                        </select>
+
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4">معلومات ولي الأمر</h4>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <input id="parentFname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأول">
+                        <input id="parentLname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأخير">
+                        <input id="parentPhone" type="text" class="border p-2 rounded" placeholder="هاتف ولي الأمر">
+                        <input id="parentEmail" type="email" class="border p-2 rounded" placeholder="بريد ولي الأمر الإلكتروني">
+                    </div>
+                    <button id="add_student" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">إضافة طالب</button>
                 </div>
-                <button id="add_student" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">إضافة طالب</button>
+                <!-- Show Student Info Section -->
+                <div id="studentInfoSection" class="hidden">
+
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4 mt-12">معلومات الطالب :</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select id="studentInfoSelectClass" class="border p-2 rounded mt-2 mb-4">
+                            <option value="0" selected disabled>اختر القسم</option>
+                        </select>
+                        <select class="border p-2 rounded mt-2 mb-4" id="studentInfoSelectStudent">
+                            <option value="0" selected disabled>اختر الطالب</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <input id="showFname" type="text" class="border p-2 rounded" placeholder="الاسم" disabled>
+                        <input id="showLname" type="text" class="border p-2 rounded" placeholder="اللقب" disabled>
+                        <input id="showDOB" type="text" class="border p-2 rounded" placeholder="تاريخ الميلاد" disabled>
+                        <input id="showSex" class="border p-2 rounded" disabled type="text" placeholder="الجنس">                    </div>
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4">معلومات ولي الأمر</h4>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <input id="showParentFname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأول" disabled>
+                        <input id="showParentLname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأخير" disabled>
+                        <input id="showParentPhone" type="text" class="border p-2 rounded" placeholder="هاتف ولي الأمر" disabled>
+                        <input id="showParentEmail" type="email" class="border p-2 rounded" placeholder="بريد ولي الأمر الإلكتروني" disabled>
+                    </div>
+                </div>
+                <!-- Delete Student Section -->
+                <div id="studentDeleteSection" class="hidden pt-16">
+                    <div class="mb-4">
+                        <h4 class="text-xl font-bold text-gray-800 mb-6 mt-12">اختر الطالب</h4>
+                        <div class="text-red-600 mb-2">
+                            <p>>تنبيه: عند حذف الطالب، سيتم حذف جميع بياناته بما في ذلك الحضور والدرجات والمعلومات الشخصية. الرجاء التأكد قبل المتابعة.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4"> 
+                            <select name="" id="ClassSelectStudentDelete" class="border p-2 rounded mt-2 mb-4">
+                                <option value="0" selected disabled>اختر القسم</option>
+                            </select>                           
+                            <select id="StudentSelectStudentDelete" class="border p-2 rounded mt-2 mb-4">
+                                <option value="0" selected disabled>اختر الطالب</option>
+                            </select>
+                            <button id="deleteStudentBtn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">حذف الطالب</button>
+                        </div>
+                    </div>
+                </div>
             </main>
             <!-- teachers Section-->
             <main id="teacher_section" class="bg-white rounded-xl card-shadow p-6 hidden">
                 <h3 class="text-xl font-bold text-gray-800 mb-6">إدارة الأساتذة</h3>
-                <div class="grid grid-cols-2 gap    -4 mb-4">
+                <div class="grid grid-cols-2 gap-4 mb-4">
                     <input id="teacherFname" type="text" class="border p-2 rounded" placeholder="الاسم">
                     <input id="teacherLname" type="text" class="border p-2 rounded" placeholder="اللقب">
                     <input id="teacherEmail" type="email" class="border p-2 rounded" placeholder="البريد الإلكتروني">

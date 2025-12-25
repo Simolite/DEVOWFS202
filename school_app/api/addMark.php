@@ -26,11 +26,11 @@ if (!isset($_POST['subject_id']) || !is_numeric($_POST['subject_id'])) {
 }
 $subject_id = intval($_POST['subject_id']);
 
-if (!isset($_POST['mark']) || !is_numeric($_POST['mark'])) {
+if (!isset($_POST['mark'])) {
     echo json_encode(['error' => 'Invalid or missing mark']);
     exit;
 }
-$mark = intval($_POST['mark']);
+$mark = trim($_POST['mark']);
 
 if (!isset($_POST['term']) || !is_numeric($_POST['term'])) {
     echo json_encode(['error' => 'Invalid or missing term']);
