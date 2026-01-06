@@ -170,7 +170,12 @@ $classes
                 <h3 class="text-xl font-bold text-gray-800 mb-6">الإشعارات</h3>
                 <table class="w-full border">
                     <thead class="bg-gray-100">
-                        <tr><th class="p-2">العنوان</th><th class="p-2">الإشعار</th><th class="p-2">التاريخ</th></tr>
+                        <tr>
+                            <th class="p-2">العنوان</th>
+                            <th class="p-2">الإشعار</th>
+                            <th class="p-2">التاريخ</th>
+                            <th class="border p-2">الإجراء</th>
+                        </tr>
                     </thead>
                     <tbody></tbody>
                 </table>

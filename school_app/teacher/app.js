@@ -287,11 +287,33 @@ async function getAnnouncements(){
         let td1 = document.createElement('td');
         let td2 = document.createElement('td');
         let td3 = document.createElement('td');
+        const td4 = document.createElement('td');
+        const btnDelete = document.createElement('button');
+        btnDelete.innerText = "حذف";
+        btnDelete.className = "bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600";
         td1.innerText = announ.title;
         td2.innerText = announ.body;
         td3.innerText = announ.created_at;
-        tr.append(td1,td2,td3);
         tbody.appendChild(tr);
+    
+        btnDelete.addEventListener('click', async () => {
+                if (confirm("هل أنت متأكد من حذف هذا الإعلان؟")) {
+                    try {
+                        const deleteUrl = `../api/deleteAnnouncement.php?id=${announ.id}`;
+                        const res = await fetch(deleteUrl, { method: 'GET' }); 
+                        const result = await res.json();
+                        if (result ==200) {
+                            tr.remove(); 
+                        } else {
+                            alert(result.error || "حدث خطأ أثناء الحذف.");
+                        }
+                    } catch (err) {
+                        console.error("Error deleting announcement:", err);
+                    }
+                }
+            });
+        td4.appendChild(btnDelete);
+        tr.append(td1,td2,td3,td4);
     }) 
 }
 
