@@ -1236,8 +1236,6 @@ populateClassSelect("deleteClassSelect");
 populateClassSelect("studentInfoSelectClass");
 
 async function populateStudentInfoSelect(){
-    console.log("hi");
-    
     let students = await getStudents("studentInfoSelectClass");
     students.forEach(stud => {
         let option = document.createElement('option');
@@ -1248,7 +1246,7 @@ async function populateStudentInfoSelect(){
 }
 
 document.getElementById("studentInfoSelectClass").addEventListener('change', async ()=>{
-    document.getElementById("studentInfoSelectStudent").innerHTML = '<option value="0" selected disabled>اختر wa الطالب</option>';
+    document.getElementById("studentInfoSelectStudent").innerHTML = '<option value="0" selected disabled>اختر الطالب</option>';
     await populateStudentInfoSelect();
 });
 
@@ -1259,15 +1257,22 @@ async function showStudentInfo(){
     
     try {
         let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-        data = await response.json();        
+        data = await response.json();   
+        if(document.getElementById("showSexOption")){
+            document.getElementById("showSexOption").remove();
+        }
         document.getElementById("showFname").value = data.fname;
         document.getElementById("showLname").value = data.lname;
         document.getElementById("showDOB").value = data.birth_date;
-        document.getElementById("showSex").value = data.sex;
         document.getElementById("showParentFname").value = data.parent_fname;
         document.getElementById("showParentLname").value = data.parent_lname;
         document.getElementById("showParentPhone").value = data.parent_phone;
         document.getElementById("showParentEmail").value = data.email;
+        if(data.sex == 'ذكر'){
+            document.getElementById("showSexMale").selected = true;
+        }else{
+            document.getElementById("showSexFemale").selected = true;
+        }
     } catch (error) {
         console.error("Error fetching Student Info:", error?.message || error);
     }
@@ -1280,7 +1285,7 @@ document.getElementById("studentInfoSelectStudent").addEventListener('change',as
 
 populateClassSelect("ClassSelectStudentDelete");
 
-async function populateStudentInfoSelect(){
+async function populateStudentDeleteSelect(){
     let students = await getStudents("ClassSelectStudentDelete");
     students.forEach(stud => {
         let option = document.createElement('option');
@@ -1292,7 +1297,7 @@ async function populateStudentInfoSelect(){
 
 document.getElementById("ClassSelectStudentDelete").addEventListener('change', async ()=>{
     document.getElementById("StudentSelectStudentDelete").innerHTML = '<option value="0" selected disabled>اختر الطالب</option>';
-    await populateStudentInfoSelect();
+    await populateStudentDeleteSelect();
 });
 
 document.getElementById("deleteStudentBtn").addEventListener('click',async ()=>{
@@ -1305,7 +1310,6 @@ document.getElementById("deleteStudentBtn").addEventListener('click',async ()=>{
         return;
     }
     await deleteStudentApi(student_id);
-    alert("Student deleted successfully!");
     document.getElementById("StudentSelectStudentDelete").innerHTML = '<option value="0" selected disabled>اختر الطالب</option>';
     await populateStudentInfoSelect();
 });
@@ -1314,12 +1318,13 @@ async function deleteStudentApi(student_id){
     let url = `../api/deleteStudent.php?id=${encodeURIComponent(student_id)}`;
     try{
         let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-        let data = await response.json();
+        let data = await response.json();      
         
         if(data.error){
             alert("Error deleting student: " + data.error);
             return;
         }
+        alert("Student deleted successfully!");
     }catch (error) {
         console.error("Error deleting student:", error?.message || error);
         alert("Error deleting student:", error?.message || error);
@@ -1347,3 +1352,54 @@ document.getElementById("studentInfoTab").addEventListener('click',()=>{
     StudentDellSection.classList.add('hidden');
     StudentInfoSection.classList.remove('hidden');
 });
+
+
+document.getElementById("saveStudentInfoBtn").addEventListener('click', async ()=>{
+    let student_id = document.getElementById("studentInfoSelectStudent").value;
+    let fname = document.getElementById("showFname").value;
+    let lname = document.getElementById("showLname").value;
+    let birthdate = document.getElementById("showDOB").value;
+    let sex = document.getElementById("showSex").value;
+    
+
+    if(!student_id || !fname || !lname || !birthdate || !sex){
+        alert("Please fill all required fields");
+        return;
+    }
+
+    await updateStudentInfoApi(student_id, fname, lname, birthdate, sex);
+    await showStudentInfo();
+});
+
+
+async function updateStudentInfoApi(student_id, fname, lname, birthdate, sex){
+    let url = "../api/editStudent.php";
+    try {
+        let response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                id: student_id,
+                Fname: fname,
+                Lname: lname,
+                bd: birthdate,
+                sex: sex,
+            })
+        });
+        
+        
+        let data = await response.json();
+        
+
+        if (data.success) {
+            alert("تم تحديث بيانات الطالب بنجاح ✅");
+        } else {
+            alert("فشل في التحديث ❌: " + (data.error || "خطأ غير معروف"));
+        }
+    } catch (error) {
+        console.error("خطأ أثناء تحديث بيانات الطالب:", error);
+    }
+}

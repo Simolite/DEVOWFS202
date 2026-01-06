@@ -512,8 +512,37 @@ function getStudentInfo($conn,$id){
     return $student;
 }
 
-function deleteStudent($conn,$id){
-    $sql = "DELETE FROM `students` WHERE `students`.`id` = $id";
-    $conn->query($sql);
+function deleteStudent(mysqli $conn, int $id): bool
+{
+    $conn->begin_transaction();
+
+    try {
+        $stmt = $conn->prepare("DELETE FROM attendance WHERE student_id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        $stmt = $conn->prepare("DELETE FROM marks WHERE student_id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        $stmt = $conn->prepare("DELETE FROM students WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        $conn->commit();
+        return true;
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        throw $e;
+    }
 }
+
+function editStudent($conn,$studentId, $Fname, $Lname, $bd, $sex){
+    $sql = "UPDATE students SET fname = ?, lname = ?, birth_date = ?, sex = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssi", $Fname, $Lname, $bd, $sex, $studentId);
+    return $stmt->execute();
+}
+
 ?>

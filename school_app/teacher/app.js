@@ -86,6 +86,9 @@ getClasses('Attclass');
 
 // Marks select change
 document.querySelector("#Markclass").addEventListener('change', () => {
+    document.getElementById("Marksubject").innerHTML = `<option value="0" selected disabled>اختر المادة</option>`;
+    document.getElementById("student").innerHTML = `<option value="0" selected disabled>اختر الطالب</option>`;
+    document.getElementById("term").innerHTML = `<option value="0" selected disabled>اختر الدورة</option>`;
     let lists = document.querySelector("#Markinput");
     if (lists) {
         Array.from(lists.children).forEach(list => {
@@ -104,6 +107,7 @@ document.querySelector("#Markclass").addEventListener('change', () => {
 
 // Attendance select change
 document.querySelector("#Attclass").addEventListener('change', () => {
+    document.querySelector("#Attsub").innerHTML = '<option value="0" selected disabled>اختر المادة</option>';
     let lists = document.querySelector("#Attinput");
     if (lists) {
         Array.from(lists.children).forEach(list => {

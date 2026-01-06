@@ -443,10 +443,15 @@ $conn->close();
                         </select>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mb-4">
-                        <input id="showFname" type="text" class="border p-2 rounded" placeholder="الاسم" disabled>
-                        <input id="showLname" type="text" class="border p-2 rounded" placeholder="اللقب" disabled>
-                        <input id="showDOB" type="text" class="border p-2 rounded" placeholder="تاريخ الميلاد" disabled>
-                        <input id="showSex" class="border p-2 rounded" disabled type="text" placeholder="الجنس">                    </div>
+                        <input id="showFname" type="text" class="border p-2 rounded" placeholder="الاسم" >
+                        <input id="showLname" type="text" class="border p-2 rounded" placeholder="اللقب" >
+                        <input id="showDOB" type="date" class="border p-2 rounded" placeholder="تاريخ الميلاد" >
+                        <select name="showSex" id="showSex" class="border p-2 rounded" >
+                            <option id="showSexOption" value="0" selected disabled> الجنس</option>
+                            <option id="showSexMale" value="ذكر">ذكر</option>
+                            <option id="showSexFemale" value="أنثى">أنثى</option>
+                        </select>
+                    </div>
                     <h4 class="text-lg font-semibold text-gray-700 mb-4">معلومات ولي الأمر</h4>
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <input id="showParentFname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأول" disabled>
@@ -454,9 +459,10 @@ $conn->close();
                         <input id="showParentPhone" type="text" class="border p-2 rounded" placeholder="هاتف ولي الأمر" disabled>
                         <input id="showParentEmail" type="email" class="border p-2 rounded" placeholder="بريد ولي الأمر الإلكتروني" disabled>
                     </div>
+                    <button id="saveStudentInfoBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">حفظ</button>
                 </div>
                 <!-- Delete Student Section -->
-                <div id="studentDeleteSection" class="hidden pt-16">
+                <div id="studentDeleteSection" class="hidden">
                     <div class="mb-4">
                         <h4 class="text-xl font-bold text-gray-800 mb-6 mt-12">اختر الطالب</h4>
                         <div class="text-red-600 mb-2">
