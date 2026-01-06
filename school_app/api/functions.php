@@ -545,4 +545,11 @@ function editStudent($conn,$studentId, $Fname, $Lname, $bd, $sex){
     return $stmt->execute();
 }
 
+function deleteMessage($conn, $message_id) {
+    $sql = "DELETE FROM messages WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $message_id);
+    return $stmt->execute();
+}
+
 ?>

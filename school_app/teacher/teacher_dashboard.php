@@ -155,6 +155,7 @@ $classes
                             <th class="p-2">الموضوع</th>
                             <th class="p-2">النوع</th>
                             <th class="p-2">التاريخ</th>
+                            <th class="p-2">الإجراء</th>
                         </tr>
                     </thead>
                     <tbody id="messagesList">

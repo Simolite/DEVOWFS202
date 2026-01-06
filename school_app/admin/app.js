@@ -262,6 +262,7 @@ async function getMessages(){
         console.error("Error fetching messages:", error?.message || error);
     }
     let tbody = document.getElementById("messagesList");
+    tbody.innerHTML = '';
     data.forEach(message =>{
         let tr = document.createElement('tr');
         let td1 = document.createElement('td');
@@ -269,12 +270,34 @@ async function getMessages(){
         let td3 = document.createElement('td');
         let td4 = document.createElement('td');
         let td5 = document.createElement('td');
+        let td6 = document.createElement('td');
+        let btn = document.createElement('button');
+        btn.addEventListener('click',async ()=>{
+
+            if(confirm("هل أنت متأكد من حذف هذه الرسالة؟")){
+                try {
+                    await fetch("../api/deleteMessage.php?id=" + message.id, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    });
+                    getMessages();
+                    alert("تم حذف الرسالة بنجاح ✅");
+                } catch (error) {
+                    console.error("Error deleting message:", error);
+                }
+            }
+        });
+        td6.appendChild(btn);
+        btn.innerText = "حذف";
+        btn.className = "bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600";
         td1.innerText = message.sender_name + " ( " +message.sender_role + " )";
         td2.innerText = message.title;
         td3.innerText = message.message;
         td4.innerText = message.type;
         td5.innerText = message.sent_at;
-        tr.append(td1,td2,td3,td4,td5);
+        tr.append(td1,td2,td3,td4,td5,td6);
         tbody.appendChild(tr);
     });
     
@@ -665,6 +688,7 @@ recipientSelect.addEventListener("change", async () => {
 document.getElementById("message_send_btn").addEventListener('click',(e)=>{
     e.preventDefault();
     sendMessage();
+    getMessages();
 })
 
 async function sendMessage() {
