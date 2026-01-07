@@ -136,6 +136,10 @@ document.querySelector("#parents").addEventListener('click',()=>{
     toggleSection('parents');
 });
 
+document.querySelector("#problemsReport").addEventListener('click',()=>{
+    toggleSection('problemsReport');
+});
+
 
 document.querySelector("#accRole").addEventListener("change",()=>{
     let list = document.querySelector("select#accountSelect");
@@ -1427,3 +1431,112 @@ async function updateStudentInfoApi(student_id, fname, lname, birthdate, sex){
         console.error("خطأ أثناء تحديث بيانات الطالب:", error);
     }
 }
+
+async function report_bug() {
+
+    populateBugReports();
+
+    let descreption = document.getElementById("reportDescription").value;
+    let title = document.getElementById("reportTitle").value;
+    if (!descreption.trim() || !title.trim()) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    let formData = new FormData();
+
+    formData.append("descreption", descreption);
+    formData.append("title", title);
+
+
+    try {
+        let resp = await fetch("../api/report_bug.php", {
+            method: "POST",
+            body: formData,
+        });
+        
+        let result = await resp.json();
+        
+        
+        if (result.success) {
+            alert('report sent successfully!');
+            document.getElementById("reportDescription").value = '';
+            document.getElementById("reportTitle").value = '';
+        } else {
+            alert('Error: ' + result.error);
+        }
+        
+    } catch (error) {
+        console.error("Error sending message:", error);
+        alert('Network error occurred. Please try again.');
+    }
+}
+
+document.getElementById("reportBugBtn").addEventListener('click',(e)=>{
+    e.preventDefault();
+    report_bug();
+});
+
+
+async function getBugReports(){
+    let url = `../api/getBugsReports.php`;
+    let data;
+    
+    try {
+        let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        data = await response.json();  
+              
+        return data;
+    } catch (error) {
+        console.error("Error fetching bug reports:", error?.message || error);
+    }
+}
+
+getBugReports();
+
+
+async function populateBugReports() {
+    let reports = await getBugReports();
+    let tbody = document.getElementById("problemsReportList");
+    tbody.innerHTML = '';
+    reports.forEach(report =>{
+        let tr = document.createElement("tr");
+        let td1 = document.createElement("td");
+        let td2 = document.createElement("td");
+        let td3 = document.createElement("td");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let btn = document.createElement("button");
+        btn.addEventListener('click', async ()=>{
+            let url = `../api/markBugAsSolved.php?id=${report.id}`;
+            try{
+                let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                let data = await response.json();      
+                
+                if(!data.success){
+                    alert("Error marking bug as solved: " + data.error);
+                    return;
+                }
+                
+                alert("Bug marked as solved successfully!");
+                populateBugReports();
+            }catch (error) {
+                console.error("Error marking bug as solved:", error?.message || error);
+                alert("Error marking bug as solved:", error?.message || error);
+            }
+        });
+
+        btn.innerText = "تم الحل";
+        btn.className = "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700";
+
+        td2.innerText = report.title;
+        td3.innerText = report.description;
+        td4.innerText = report.date;
+        td1.innerText = report.role;
+        td5.appendChild(btn);
+        tr.append(td1,td2,td3,td4,td5);
+        tbody.appendChild(tr);
+    });
+};
+
+populateBugReports();

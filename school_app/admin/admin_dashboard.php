@@ -106,6 +106,7 @@ $conn->close();
                     <button id="class" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الأقسام</button>
                     <button id="student" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الطلاب</button>
                     <button id="parents" class="px-6 py-3 text-right font-semibold hover:text-blue-600">أولياء الأمور</button>
+                    <button id="problemsReport" class="px-6 py-3 text-right font-semibold hover:text-blue-600">تبليغ بمشكلة</button>
                     <!-- <button id="teacher" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الأساتذة</button>
                     <button id="term" class="px-6 py-3 text-right font-semibold hover:text-blue-600">الدورات</button> -->
                 </div>
@@ -506,6 +507,39 @@ $conn->close();
                     <input id="parentPhoneAdmin" type="tel" class="border p-2 rounded" placeholder="الهاتف">
                 </div>
                 <button id="add_parent" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">حفض التغييرات</button>
+            </main>
+
+            <!-- Problems Report Section -->
+            <main id="problemsReport_section" class="bg-white rounded-xl card-shadow p-6 hidden">
+                <!-- Problems Report Table section -->
+                <h3 class="text-xl font-bold text-gray-800 mb-6">تقارير المشاكل</h3>
+                <table class="w-full border">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="p-2">المبلغ</th>
+                            <th class="p-2">العنوان</th>
+                            <th class="p-2">الوصف</th>
+                            <th class="p-2">التاريخ</th>
+                            <th class="p-2">الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="problemsReportList"></tbody>
+                </table>
+                <h3 class="text-xl font-bold text-gray-800 mb-6 mt-4 mb-4">تبليغ بمشكلة</h3>
+                    <form id="reportForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">عنوان المشكلة</label>
+                            <input type="text" id="reportTitle" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="اكتب عنوان المشكلة هنا...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">وصف المشكلة</label>
+                            <textarea id="reportDescription" rows="5" class="w-full p-3 border border-gray-300 rounded-lg resize-none" placeholder="اكتب وصف المشكلة هنا..."></textarea>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button type="reset" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">مسح</button>
+                            <button id="reportBugBtn" type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700" id="report_send_btn">إرسال</button>
+                        </div>
+                    </form>
             </main>
 
     </div>

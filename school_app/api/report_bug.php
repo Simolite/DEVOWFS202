@@ -15,7 +15,7 @@ require_once 'functions.php';
 
 
 // Validate required fields
-$required_fields = ['receiver_id', 'receiver_role', 'message', 'title', 'type'];
+$required_fields = ['descreption', 'title'];
 foreach ($required_fields as $field) {
     if (!isset($_POST[$field]) || empty(trim($_POST[$field]))) {
         echo json_encode(['error' => "Invalid or missing $field"]);
@@ -24,31 +24,29 @@ foreach ($required_fields as $field) {
 }
 
 // Sanitize inputs
-$receiver_id = intval($_POST['receiver_id']);
-$receiver_role = trim($_POST['receiver_role']);
-$message = trim($_POST['message']);
+
+$descreption = trim($_POST['descreption']);
 $title = trim($_POST['title']);
-$type = trim($_POST['type']);
 
 
 // Get sender info
-$sender_id = $_SESSION['linked_id']; 
-$sender_role = $_SESSION['role'];
+$linked_id = $_SESSION['linked_id']; 
+$role = $_SESSION['role'];
 
 // Additional validation: Check if receiver exists
 try {
 
     
-    // Send the message
-    $result = sendMessages($conn, $receiver_id, $receiver_role, $message, $title, $type, $sender_id, $sender_role);
+    // Send the report
+    $result = report_bug($conn, $linked_id, $role, $descreption, $title);
     
     if ($result) {
-        echo json_encode(['success' => 'Message sent successfully']);
+        echo json_encode(['success' => 'report sent successfully']);
     } else {
-        echo json_encode(['error' => 'Failed to send message']);
+        echo json_encode(['error' => 'Failed to send report']);
     }
 } catch (Exception $e) {
-    error_log("Message sending error: " . $e->getMessage());
+    error_log("Report sending error: " . $e->getMessage());
     echo json_encode(['error' => 'Database error occurred']);
 }
 

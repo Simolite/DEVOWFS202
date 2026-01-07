@@ -552,4 +552,50 @@ function deleteMessage($conn, $message_id) {
     return $stmt->execute();
 }
 
+
+function report_bug($conn, $linked_id, $role, $descreption, $title) {
+    $sql = "INSERT INTO bugs 
+        (linked_id, role, description, title)
+        VALUES (?, ?, ?, ?)";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Prepare failed: " . $conn->error);
+    }
+
+    $stmt->bind_param(
+        "isss",
+        $linked_id,
+        $role,
+        $descreption,
+        $title
+    );
+
+    $result = $stmt->execute();
+    
+    if (!$result) {
+        throw new Exception("Execute failed: " . $stmt->error);
+    }
+
+    $stmt->close();
+    return $result;
+}
+
+function getBugs($conn){
+    $bugs = [];
+    $sql = "SELECT * FROM bugs ORDER BY date DESC";
+    $result = $conn->query($sql);
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $bugs[] = $row;
+        }
+    }
+    return $bugs;
+}
+
+function markBugAsSolved($conn,$id){
+    $sql = "DELETE FROM `bugs` WHERE id = $id";
+    return $conn->query($sql);
+}
+
 ?>
