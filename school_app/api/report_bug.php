@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 header('Content-Type: application/json'); 
 
-// Check if user is logged in and has valid role
+
 if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['student', 'teacher', 'admin'])) { 
     echo json_encode(['error' => 'Unauthorized']); 
     exit; 
@@ -14,7 +14,6 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['student', 'teach
 require_once 'functions.php'; 
 
 
-// Validate required fields
 $required_fields = ['descreption', 'title'];
 foreach ($required_fields as $field) {
     if (!isset($_POST[$field]) || empty(trim($_POST[$field]))) {
@@ -23,7 +22,6 @@ foreach ($required_fields as $field) {
     }
 }
 
-// Sanitize inputs
 
 $descreption = trim($_POST['descreption']);
 $title = trim($_POST['title']);

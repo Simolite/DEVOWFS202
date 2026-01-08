@@ -106,6 +106,7 @@ $class = $result->fetch_assoc();
                     <button id="attendance" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الحضور</button>
                     <button id="report" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">التقارير</button>
                     <button id="messages" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الرسائل</button>
+                    <button id="problemsReport" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">تقارير المشاكل</button>
                 </div>
             </div>
 
@@ -143,6 +144,24 @@ $class = $result->fetch_assoc();
                     <tbody></tbody>
                 </table>
             </main>
+                <!-- Problems Report Section -->
+            <main id="problemsReport_section" class="bg-white rounded-xl card-shadow p-6 hidden">
+                <h3 class="text-xl font-bold text-gray-800 mb-6 mt-4 mb-4">تبليغ بمشكلة</h3>
+                    <form id="reportForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">عنوان المشكلة</label>
+                            <input type="text" id="reportTitle" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="اكتب عنوان المشكلة هنا...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">وصف المشكلة</label>
+                            <textarea id="reportDescription" rows="5" class="w-full p-3 border border-gray-300 rounded-lg resize-none" placeholder="اكتب وصف المشكلة هنا..."></textarea>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button type="reset" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">مسح</button>
+                            <button id="reportBugBtn" type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700" id="report_send_btn">إرسال</button>
+                        </div>
+                    </form>
+            </main>
 
             
             <main id="messages_section" class="bg-white rounded-xl card-shadow p-6 hidden">
@@ -164,6 +183,51 @@ $class = $result->fetch_assoc();
                         </tbody>
                     </table>
                 </div>
+
+                                <!-- Send Message Section -->
+                <div class="container mx-auto px-4 mt-8">
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">إرسال رسالة</h3>
+                        <form id="messageForm" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">المرسل إليه</label>
+                                    <select id="recipient" class="w-full p-3 border border-gray-300 rounded-lg">
+                                        <option value="0" selected disabled>اختر المرسل إليه</option>
+                                        <option value="admin">الإدارة</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">نوع الرسالة</label>
+                                    <select id="messageType" class="w-full p-3 border border-gray-300 rounded-lg">
+                                        <option value="0" selected disabled>اختر نوع الرسالة</option>
+                                        <option value="inquiry">استفسار</option>
+                                        <option value="complaint">شكوى</option>
+                                        <option value="suggestion">اقتراح</option>
+                                        <option value="absence">إعتذار عن غياب</option>
+                                        <option value="meeting">طلب موعد</option>
+                                        <option value="other">أخرى</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">موضوع الرسالة</label>
+                                <input type="text" id="message_subject" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="اكتب موضوع الرسالة هنا...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">محتوى الرسالة</label>
+                                <textarea id="messageContent" rows="5" class="w-full p-3 border border-gray-300 rounded-lg resize-none" placeholder="اكتب رسالتك هنا..."></textarea>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <button type="reset" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">مسح</button>
+                                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">إرسال الرسالة</button>
+                            </div>
+                        </form>
+                        <div id="messageStatus" class="mt-4 hidden"></div>
+                    </div>
+                </div>
+
+
             </main>
 
             <!-- Report Section -->
@@ -197,48 +261,9 @@ $class = $result->fetch_assoc();
         </div>
     </div>
 
-    <!-- Send Message Section -->
-    <div class="container mx-auto px-4 mt-8">
-        <div class="bg-white rounded-xl card-shadow p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-6">إرسال رسالة</h3>
-            <form id="messageForm" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">المرسل إليه</label>
-                        <select id="recipient" class="w-full p-3 border border-gray-300 rounded-lg">
-                            <option value="0" selected disabled>اختر المرسل إليه</option>
-                            <option value="admin">الإدارة</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">نوع الرسالة</label>
-                        <select id="messageType" class="w-full p-3 border border-gray-300 rounded-lg">
-                            <option value="0" selected disabled>اختر نوع الرسالة</option>
-                            <option value="inquiry">استفسار</option>
-                            <option value="complaint">شكوى</option>
-                            <option value="suggestion">اقتراح</option>
-                            <option value="absence">إعتذار عن غياب</option>
-                            <option value="meeting">طلب موعد</option>
-                            <option value="other">أخرى</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">موضوع الرسالة</label>
-                    <input type="text" id="message_subject" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="اكتب موضوع الرسالة هنا...">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">محتوى الرسالة</label>
-                    <textarea id="messageContent" rows="5" class="w-full p-3 border border-gray-300 rounded-lg resize-none" placeholder="اكتب رسالتك هنا..."></textarea>
-                </div>
-                <div class="flex items-center justify-between">
-                    <button type="reset" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">مسح</button>
-                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">إرسال الرسالة</button>
-                </div>
-            </form>
-            <div id="messageStatus" class="mt-4 hidden"></div>
-        </div>
-    </div>
+
+
+
 
     <script src="app.js"></script>
     <script src="tailwindcss.js"></script>

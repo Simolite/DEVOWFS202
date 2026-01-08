@@ -13,19 +13,14 @@ if (!in_array($_SESSION['role'], ['student', 'teacher', 'admin'])) {
 require_once 'functions.php';
 
 
-if (!isset($_GET['audience'])) {
-    echo json_encode(['error' => 'Invalid or missing audience']);
-    exit;
-}
 
-$audience = $_GET['audience'];
 
-if (isset($_GET['class_id'])) {
-    $class_id = $_GET['class_id'];
-    $Announcements = getAnnouncements($conn,$audience,$class_id);
-}else{
-    $Announcements = getAnnouncements($conn,$audience);
-}
+$id = $_SESSION['linked_id'];
+
+$role = $_SESSION['role'];
+
+$Announcements = getAnnouncements($conn,$id,$role);
+
 
 echo json_encode($Announcements);
 ?>

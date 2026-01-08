@@ -83,21 +83,20 @@ function addMark($conn,$student_id,$subject_id,$mark,$term_id,$date){
     $conn->query($sql);
 }
 
-function getAnnouncements($conn,$audience,$class_id=0){
+function getAnnouncements($conn,$id,$role){
     $announcements = [];
-    if($class_id==0){
-        $sql = "SELECT * FROM announcements WHERE audience = '$audience' OR audience = 'all'";
-    }elseif($class_id=='all'){
-        $sql = "SELECT * FROM announcements";
+    if($role == 'admin'){
+        $sql = "SELECT * FROM announcements WHERE 1";
     }else{
-        $sql = "SELECT * FROM announcements WHERE audience = '$audience' OR linked_id = '$class_id' OR audience = 'all'";
+        $sql = "SELECT * FROM announcements WHERE audience = '$role' and linked_id = '$id' OR audience = 'all'";
     }
+    
     $result = $conn->query($sql);
     while ($row = $result->fetch_assoc()){
         $announcements[] = $row;
     } 
     return $announcements;
-}
+};
 
 function getUserInfo($conn,$id){
     $student = [];
@@ -583,7 +582,27 @@ function report_bug($conn, $linked_id, $role, $descreption, $title) {
 
 function getBugs($conn){
     $bugs = [];
-    $sql = "SELECT * FROM bugs ORDER BY date DESC";
+    $sql = "SELECT 
+    b.*,
+    CASE 
+        WHEN b.role = 'admin' THEN a.fname
+        WHEN b.role = 'teacher' THEN t.fname
+        WHEN b.role = 'student' THEN s.fname
+    END AS fname,
+    CASE 
+        WHEN b.role = 'admin' THEN a.lname
+        WHEN b.role = 'teacher' THEN t.lname
+        WHEN b.role = 'student' THEN s.lname
+    END AS lname
+FROM bugs b
+LEFT JOIN admins a 
+    ON b.role = 'admin' AND b.linked_id = a.id
+LEFT JOIN teachers t 
+    ON b.role = 'teacher' AND b.linked_id = t.id
+LEFT JOIN students s 
+    ON b.role = 'student' AND b.linked_id = s.id
+ORDER BY b.date DESC;
+";
     $result = $conn->query($sql);
     if ($result) {
         while ($row = $result->fetch_assoc()) {

@@ -139,6 +139,7 @@ $classes
                 <button id="attendance" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الحضور</button>
                 <button id="marks" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الدرجات</button>
                 <button id="messages" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الرسائل</button>
+                <button id="problemsReport" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">تقارير المشاكل</button>
             </div>
         </div>
 
@@ -236,6 +237,24 @@ $classes
                     <input id="Attdate" type="date" class="border p-2 rounded">
                     <button id="submitAtt" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">حفظ</button>
                 </div>
+            </main>
+                        <!-- Problems Report Section -->
+            <main id="problemsReport_section" class="bg-white rounded-xl card-shadow p-6 hidden">
+                <h3 class="text-xl font-bold text-gray-800 mb-6 mt-4 mb-4">تبليغ بمشكلة</h3>
+                    <form id="reportForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">عنوان المشكلة</label>
+                            <input type="text" id="reportTitle" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="اكتب عنوان المشكلة هنا...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">وصف المشكلة</label>
+                            <textarea id="reportDescription" rows="5" class="w-full p-3 border border-gray-300 rounded-lg resize-none" placeholder="اكتب وصف المشكلة هنا..."></textarea>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button type="reset" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">مسح</button>
+                            <button id="reportBugBtn" type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700" id="report_send_btn">إرسال</button>
+                        </div>
+                    </form>
             </main>
 
     <!-- Timetable -->

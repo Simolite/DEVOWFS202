@@ -224,6 +224,10 @@ document.querySelector("#messages").addEventListener('click',()=>{
     toggleSection('messages','messages_section');
 });
 
+document.querySelector("#problemsReport").addEventListener('click',()=>{
+    toggleSection('problemsReport','problemsReport_section');
+});
+
 
 async function getMessages(){
     let url = '../api/getMessages.php';
@@ -296,7 +300,7 @@ async function getUserInfo() {
 
 async function getAnnouncements(){
     await getUserInfo();
-    let url = `../api/getAnnouncements.php?audience=all`;
+    let url = `../api/getAnnouncements.php`;
     let data;
     try {
         let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -578,3 +582,47 @@ document.getElementById("submitMessage").addEventListener("click", (e)=>{
     sendMessage();
     getMessages();
 })
+
+async function report_bug() {
+
+
+    let descreption = document.getElementById("reportDescription").value;
+    let title = document.getElementById("reportTitle").value;
+    if (!descreption.trim() || !title.trim()) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    let formData = new FormData();
+
+    formData.append("descreption", descreption);
+    formData.append("title", title);
+
+
+    try {
+        let resp = await fetch("../api/report_bug.php", {
+            method: "POST",
+            body: formData,
+        });
+        
+        let result = await resp.json();
+        
+        
+        if (result.success) {
+            alert('report sent successfully!');
+            document.getElementById("reportDescription").value = '';
+            document.getElementById("reportTitle").value = '';
+        } else {
+            alert('Error: ' + result.error);
+        }
+        
+    } catch (error) {
+        console.error("Error sending message:", error);
+        alert('Network error occurred. Please try again.');
+    }
+}
+
+document.getElementById("reportBugBtn").addEventListener('click',(e)=>{
+    e.preventDefault();
+    report_bug();
+});

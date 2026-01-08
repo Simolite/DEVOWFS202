@@ -159,7 +159,7 @@ async function getUserInfo() {
 
 async function getAnnouncements(){
     await getUserInfo();
-    let url = `../api/getAnnouncements.php?audience=all&class_id=${userInfo.class_id}`;
+    let url = `../api/getAnnouncements.php`;
     let data;
     try {
         let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -180,6 +180,13 @@ async function getAnnouncements(){
         tbody.appendChild(tr);
     }) 
 }
+
+
+
+document.querySelector("#problemsReport").addEventListener('click',()=>{
+    toggleSection('problemsReport','problemsReport_section');
+});
+
 
 getAnnouncements();
 
@@ -415,3 +422,47 @@ async function getMessages(){
 }
 
  getMessages();
+
+ async function report_bug() {
+
+
+    let descreption = document.getElementById("reportDescription").value;
+    let title = document.getElementById("reportTitle").value;
+    if (!descreption.trim() || !title.trim()) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    let formData = new FormData();
+
+    formData.append("descreption", descreption);
+    formData.append("title", title);
+
+
+    try {
+        let resp = await fetch("../api/report_bug.php", {
+            method: "POST",
+            body: formData,
+        });
+        
+        let result = await resp.json();
+        
+        
+        if (result.success) {
+            alert('report sent successfully!');
+            document.getElementById("reportDescription").value = '';
+            document.getElementById("reportTitle").value = '';
+        } else {
+            alert('Error: ' + result.error);
+        }
+        
+    } catch (error) {
+        console.error("Error sending message:", error);
+        alert('Network error occurred. Please try again.');
+    }
+}
+
+document.getElementById("reportBugBtn").addEventListener('click',(e)=>{
+    e.preventDefault();
+    report_bug();
+});

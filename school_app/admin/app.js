@@ -1511,7 +1511,8 @@ async function populateBugReports() {
             let url = `../api/markBugAsSolved.php?id=${report.id}`;
             try{
                 let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                let data = await response.json();      
+                let data = await response.json();     
+                 
                 
                 if(!data.success){
                     alert("Error marking bug as solved: " + data.error);
@@ -1532,7 +1533,7 @@ async function populateBugReports() {
         td2.innerText = report.title;
         td3.innerText = report.description;
         td4.innerText = report.date;
-        td1.innerText = report.role;
+        td1.innerText = report.fname + ' ' + report.lname + ' (' + report.role + ')';
         td5.appendChild(btn);
         tr.append(td1,td2,td3,td4,td5);
         tbody.appendChild(tr);
