@@ -497,7 +497,7 @@ $conn->close();
             <!-- parents Section-->
             <main id="parents_section" class="bg-white rounded-xl card-shadow p-6 hidden grid grid-rows-2  relative">
                 <div class="absolute top-0 right-0 flex">
-                    <button id="show_add_parent" class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">إضافة ولي أمر جديد</button>
+                    <button id="show_add_parent" class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100  hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">إضافة ولي أمر جديد</button>
                     <button id="show_parent_info" class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">معلومات أولياء الأمور</button>
                     <button id="show_delete_parent" class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">حذف ولي أمر</button>
                 </div>
