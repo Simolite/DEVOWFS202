@@ -423,12 +423,11 @@ $conn->close();
                         </select>
 
                     </div>
-                    <h4 class="text-lg font-semibold text-gray-700 mb-4">معلومات ولي الأمر</h4>
+                    <h4 class="text-lg font-semibold text-gray-700 mb-4"> ولي الأمر</h4>
                     <div class="grid grid-cols-2 gap-4 mb-4">
-                        <input id="parentFname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأول">
-                        <input id="parentLname" type="text" class="border p-2 rounded" placeholder="اسم ولي الأمر الأخير">
-                        <input id="parentPhone" type="text" class="border p-2 rounded" placeholder="هاتف ولي الأمر">
-                        <input id="parentEmail" type="email" class="border p-2 rounded" placeholder="بريد ولي الأمر الإلكتروني">
+                    <select name="pId" id="pId" class="border p-2 rounded w-full mb-4">
+                        <option value="0" selected disabled>اختر ولي الامر</option>
+                    </select>
                     </div>
                     <button id="add_student" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">إضافة طالب</button>
                 </div>

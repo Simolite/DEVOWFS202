@@ -27,7 +27,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
-$required_fields = ['fname', 'lname', 'email', 'sex', 'birthdate', 'class_id', 'pfname', 'plname', 'phone'];
+$required_fields = ['fname', 'lname', 'sex', 'birthdate', 'class_id', 'pId'];
 $errors = [];
 
 foreach ($required_fields as $field) {
@@ -44,16 +44,13 @@ if (!empty($errors)) {
 
 $fname = trim($input['fname']);
 $lname = trim($input['lname']);
-$email = trim($input['email']);
 $sex = trim($input['sex']);
 $birth_date = trim($input['birthdate']);
 $class_id = trim($input['class_id']);
-$pfname = trim($input['pfname']);
-$plname = trim($input['plname']);
-$phone = trim($input['phone']);
+$pId = trim($input['pId']);
 
 try {
-    $result = addStudent($conn, $fname, $lname, $email, $sex, $birth_date, $class_id, $pfname, $plname, $phone);
+    $result = addStudent($conn, $fname, $lname, $sex, $birth_date, $class_id, $pId);
     
     if ($result) {
         echo json_encode(['success' => true, 'message' => 'تمت إضافة الطالب بنجاح']);

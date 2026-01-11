@@ -104,7 +104,7 @@ $class = $result->fetch_assoc();
                     <button id="notifaction" class="selected px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الإشعارات</button>
                     <button id="marks" class=" px-6 py-4 font-semibold">الدرجات</button>
                     <button id="attendance" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الحضور</button>
-                    <button id="report" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">التقارير</button>
+                    <button id="report" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600 hidden">التقارير</button>
                     <button id="messages" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الرسائل</button>
                     <button id="problemsReport" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">تبليغ بمشكلة  في الموقع</button>
                 </div>

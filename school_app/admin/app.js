@@ -1050,7 +1050,7 @@ document.getElementById("classSubmit").addEventListener('click',()=>{
     editClass(id, name, timetable_url);
 });
 
-async function addStudent(fname, lname, birthdate, class_id,sex,pfname,plname,phone,email){
+async function addStudent(fname, lname, birthdate, class_id,sex,pId){
     
     let url = "../api/addStudent.php";
     try {
@@ -1066,10 +1066,7 @@ async function addStudent(fname, lname, birthdate, class_id,sex,pfname,plname,ph
                 birthdate: birthdate,
                 class_id: class_id,
                 sex: sex,
-                pfname: pfname,
-                plname: plname,
-                phone: phone,
-                email: email
+                pId: pId
             })
         });
         
@@ -1097,17 +1094,14 @@ document.getElementById("add_student").addEventListener('click',()=>{
     let birthdate = document.getElementById("studentDOB").value;
     let class_id = document.getElementById("studentClassSelect").value;
     let sex = document.getElementById("studentSex").value;
-    let Pfname = document.getElementById("parentFname").value;
-    let Plname = document.getElementById("parentLname").value;
-    let Phone = document.getElementById("parentPhone").value;
-    let email = document.getElementById("parentEmail").value;
+    let pId = document.getElementById("pId").value;
 
-    if(!fname || !lname || !birthdate || !class_id || !sex || !Pfname || !Plname || !Phone || !email){
+    if(!fname || !lname || !birthdate || !class_id || !sex || !pId){
         alert("Please fill all required fields");
         return;
     }
 
-    addStudent(fname, lname, birthdate, class_id,sex,Pfname,Plname,Phone,email);
+    addStudent(fname, lname, birthdate, class_id,sex,pId);
 });
 
 
@@ -1611,6 +1605,8 @@ async function addParent($fname, $lname, $phone, $email){
     await populateParentSelect("parentsDeleteSelect");
     await populateParentSelect("parentsSelect");
 }
+
+populateParentSelect("pId")
 
 
 document.getElementById("add_parent_btn").addEventListener('click',()=>{

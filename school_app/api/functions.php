@@ -407,7 +407,7 @@ function editClass($conn, $id, $name, $timetable_url) {
     }
 }
 
-function addStudent($conn, $fname, $lname, $email, $sex, $birth_date, $class_id, $pfname, $plname, $phone) {
+function addStudent($conn, $fname, $lname, $sex, $birth_date, $class_id, $pId) {
     try {
         // Start transaction
         $conn->begin_transaction();
