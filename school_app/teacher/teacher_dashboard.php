@@ -164,6 +164,74 @@ $classes
                     </tbody>
                 </table>
             </div>
+                        <div class="container mx-auto px-4 mt-8">
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">إرسال رسالة</h3>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-4">✉️ إرسال رسالة جديدة</h4>
+                        <form id="messageForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">دور المرسل إليه</label>
+                                <select id="recipient_role" class="w-full p-3 border border-gray-300 rounded-lg">
+                                    <option value="0" selected disabled>اختر دور المرسل إليه</option>
+                                    <option value="admin">الإدارة</option>
+                                    <option value="student">طالب</option>
+                                    <option value="teacher">أستاذ</option>
+                                </select>
+                            </div>
+                            <div class="hidden">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">قسم المرسل إليه</label>
+                                <select id="recipient_class" class="w-full p-3 border border-gray-300 rounded-lg ">
+                                    <option value="0" selected disabled>اختر قسم المرسل إليه</option>
+                                </select>
+                            </div>
+                            <div class="hidden">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">المرسل إليه</label>
+                                <select id="recipient" class="w-full p-3 border border-gray-300 rounded-lg">
+                                    <option value="0" selected disabled>اختر المرسل إليه</option>
+                                    <?php foreach ($teachers as $teacher){
+                                        $tfname = $teacher['fname'].' '.$teacher['lname'];
+                                        $teaid = $teacher['id'];
+                                        echo "<option value='$teaid'>$tfname</option>";
+                                    } ?>
+                                </select>
+                            </div>
+                            <div class="hidden">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">المرسل إليه</label>
+                                <select id="Srecipient" class="w-full p-3 border border-gray-300 rounded-lg">
+                                    <option value="0" selected disabled>اختر المرسل إليه</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">نوع الرسالة</label>
+                                <select id="messageType" class="w-full p-3 border border-gray-300 rounded-lg">
+                                    <option value="0" selected disabled>اختر نوع الرسالة</option>
+                                    <option value="inquiry">استفسار</option>
+                                    <option value="complaint">شكوى</option>
+                                    <option value="suggestion">اقتراح</option>
+                                    <option value="absence">إعتذار عن غياب</option>
+                                    <option value="meeting">طلب موعد</option>
+                                    <option value="other">أخرى</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">موضوع الرسالة</label>
+                                <input type="text" id="message_subject" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="اكتب الموضوع هنا...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">محتوى الرسالة</label>
+                                <textarea id="messageContent" rows="5" class="w-full p-3 border border-gray-300 rounded-lg resize-none" placeholder="اكتب رسالتك هنا..."></textarea>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <button type="reset" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">مسح</button>
+                                <button id="submitMessage" type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">إرسال</button>
+                            </div>
+                        </form>
+                        <div id="messageStatus" class="mt-4 hidden"></div>
+                    </div>
+                    <div id="messageStatus" class="mt-4 hidden"></div>
+                </div>
+            </div>
         </main>
 
 
@@ -267,74 +335,7 @@ $classes
                 </div>
             </div>
             <!-- Send Message Section -->
-            <div class="container mx-auto px-4 mt-8">
-                <div class="bg-white rounded-xl card-shadow p-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-6">إرسال رسالة</h3>
-                    <div>
-                        <h4 class="text-lg font-semibold text-gray-700 mb-4">✉️ إرسال رسالة جديدة</h4>
-                        <form id="messageForm" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">دور المرسل إليه</label>
-                                <select id="recipient_role" class="w-full p-3 border border-gray-300 rounded-lg">
-                                    <option value="0" selected disabled>اختر دور المرسل إليه</option>
-                                    <option value="admin">الإدارة</option>
-                                    <option value="student">طالب</option>
-                                    <option value="teacher">أستاذ</option>
-                                </select>
-                            </div>
-                            <div class="hidden">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">قسم المرسل إليه</label>
-                                <select id="recipient_class" class="w-full p-3 border border-gray-300 rounded-lg ">
-                                    <option value="0" selected disabled>اختر قسم المرسل إليه</option>
-                                </select>
-                            </div>
-                            <div class="hidden">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">المرسل إليه</label>
-                                <select id="recipient" class="w-full p-3 border border-gray-300 rounded-lg">
-                                    <option value="0" selected disabled>اختر المرسل إليه</option>
-                                    <?php foreach ($teachers as $teacher){
-                                        $tfname = $teacher['fname'].' '.$teacher['lname'];
-                                        $teaid = $teacher['id'];
-                                        echo "<option value='$teaid'>$tfname</option>";
-                                    } ?>
-                                </select>
-                            </div>
-                            <div class="hidden">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">المرسل إليه</label>
-                                <select id="Srecipient" class="w-full p-3 border border-gray-300 rounded-lg">
-                                    <option value="0" selected disabled>اختر المرسل إليه</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">نوع الرسالة</label>
-                                <select id="messageType" class="w-full p-3 border border-gray-300 rounded-lg">
-                                    <option value="0" selected disabled>اختر نوع الرسالة</option>
-                                    <option value="inquiry">استفسار</option>
-                                    <option value="complaint">شكوى</option>
-                                    <option value="suggestion">اقتراح</option>
-                                    <option value="absence">إعتذار عن غياب</option>
-                                    <option value="meeting">طلب موعد</option>
-                                    <option value="other">أخرى</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">موضوع الرسالة</label>
-                                <input type="text" id="message_subject" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="اكتب الموضوع هنا...">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">محتوى الرسالة</label>
-                                <textarea id="messageContent" rows="5" class="w-full p-3 border border-gray-300 rounded-lg resize-none" placeholder="اكتب رسالتك هنا..."></textarea>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <button type="reset" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">مسح</button>
-                                <button id="submitMessage" type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">إرسال</button>
-                            </div>
-                        </form>
-                        <div id="messageStatus" class="mt-4 hidden"></div>
-                    </div>
-                    <div id="messageStatus" class="mt-4 hidden"></div>
-                </div>
-            </div>
+
         </div>
     </div>
 

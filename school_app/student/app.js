@@ -312,68 +312,75 @@ async function getTeachers(){
     window.location.href = "../login/logout.php";
  });
 
- async function sendMessages(){
-    let recipient = document.getElementById("recipient").value;
+async function sendMessages() {
+    const recipientSelect = document.getElementById("recipient");
+    let recipient = recipientSelect.value;
+
     const type = document.getElementById("messageType").value;
     const subject = document.getElementById("message_subject").value;
     const content = document.getElementById("messageContent").value;
     const statusDiv = document.getElementById("messageStatus");
+    const form = document.getElementById("messageForm");
+
     let role;
-    if(recipient == 'admin'){
-        role = 'admin';
-        recipient = 1;
-    }else {
-        role = 'teacher';
+
+    // تحديد الدور
+    if (recipient === "admin") {
+        role = "admin";
+        recipient = 1; // ID ديال admin
+    } else {
+        role = "teacher"; // افتراضياً
     }
 
-    
-    if (!recipient || !type || !subject || !content) {
-        statusDiv.textContent = "⚠️ يرجى ملء جميع الحقول";
-        statusDiv.className = "mt-4 p-3 bg-red-100 text-red-800 rounded transition-all duration-300";
+    // Validation
+    if (!recipient || !role || !type || !subject || !content) {
+        statusDiv.textContent = "⚠️ المرجو ملء جميع الحقول";
+        statusDiv.className = "mt-4 p-3 bg-red-100 text-red-800 rounded";
         statusDiv.classList.remove("hidden");
         return;
     }
 
-
+    // Loading
     statusDiv.textContent = "⏳ جاري إرسال الرسالة...";
-    statusDiv.className = "mt-4 p-3 bg-blue-100 text-blue-800 rounded transition-all duration-300";
+    statusDiv.className = "mt-4 p-3 bg-blue-100 text-blue-800 rounded";
     statusDiv.classList.remove("hidden");
 
-    const url = "../api/sendMessages.php";
-
+    // FormData
     const formData = new FormData();
-    formData.append("reciver_id", recipient);
-    formData.append("reciver_role", role);
+    formData.append("receiver_id", recipient);
+    formData.append("receiver_role", role);
     formData.append("message", content);
     formData.append("title", subject);
     formData.append("type", type);
 
-    let data;
     try {
-    let response = await fetch(url, {
-        method: "POST",
-        body: formData
-    });
+        const response = await fetch("../api/sendMessages.php", {
+            method: "POST",
+            body: formData
+        });
 
-    data = await response.json();
+        if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (data.success === true) {
+            statusDiv.textContent = "✅ تم إرسال الرسالة بنجاح";
+            statusDiv.className = "mt-4 p-3 bg-green-100 text-green-800 rounded";
+            form.reset();
+        } else {
+            statusDiv.textContent = "❌ " + (data.error || "فشل إرسال الرسالة");
+            statusDiv.className = "mt-4 p-3 bg-red-100 text-red-800 rounded";
+        }
+
     } catch (error) {
-    console.error("Error sending message:", error?.message || error);
+        console.error("Send message error:", error);
+        statusDiv.textContent = "❌ خطأ في الاتصال بالخادم";
+        statusDiv.className = "mt-4 p-3 bg-red-100 text-red-800 rounded";
     }
+}
 
-    if (data == 200) {
-        statusDiv.textContent = " تم إرسال الرسالة...";
-        document.getElementById("messageForm").reset();
-    } else {
-        statusDiv.textContent = "حدث خطأ ,المرجو المحاولة لاحقا "
-    }
-
-    console.log();
-    
-
-
-
-
- };
 
 
 document.getElementById("messageForm").addEventListener("submit", function(e) {

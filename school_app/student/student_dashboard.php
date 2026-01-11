@@ -106,7 +106,7 @@ $class = $result->fetch_assoc();
                     <button id="attendance" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الحضور</button>
                     <button id="report" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">التقارير</button>
                     <button id="messages" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">الرسائل</button>
-                    <button id="problemsReport" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">تقارير المشاكل</button>
+                    <button id="problemsReport" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">تبليغ بمشكلة  في الموقع</button>
                 </div>
             </div>
 
