@@ -409,45 +409,17 @@ function editClass($conn, $id, $name, $timetable_url) {
 
 function addStudent($conn, $fname, $lname, $sex, $birth_date, $class_id, $pId) {
     try {
-        // Start transaction
-        $conn->begin_transaction();
-        
-        // 1. Insert parent
-        $sql = "INSERT INTO parents (fname, lname, phone, email) VALUES (?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        
-        if (!$stmt) {
-            throw new Exception("Parent prepare failed: " . $conn->error);
-        }
-        
-        $stmt->bind_param("ssss", $pfname, $plname, $phone, $email);
-        
-        if (!$stmt->execute()) {
-            throw new Exception("Parent insert failed: " . $stmt->error);
-        }
-        
-        $parent_id = $conn->insert_id;
-        $stmt->close();
-        
-        // 2. Insert student
+
         $sql = "INSERT INTO students (fname, lname, sex, birth_date, class_id, parent_id) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        
-        if (!$stmt) {
-            throw new Exception("Student prepare failed: " . $conn->error);
-        }
-        
-        // Make sure $class_id and $parent_id are integers
-        $class_id_int = (int)$class_id;
-        $parent_id_int = (int)$parent_id;
         
         $stmt->bind_param("ssssii", 
             $fname, 
             $lname, 
             $sex, 
             $birth_date, 
-            $class_id_int, 
-            $parent_id_int
+            $class_id, 
+            $pId
         );
         
         if (!$stmt->execute()) {
@@ -455,14 +427,9 @@ function addStudent($conn, $fname, $lname, $sex, $birth_date, $class_id, $pId) {
         }
         
         $stmt->close();
-        
-        // Commit transaction
-        $conn->commit();
         return true;
         
     } catch (Exception $e) {
-        // Rollback on error
-        $conn->rollback();
         error_log("addStudent Error: " . $e->getMessage());
         return false;
     }
