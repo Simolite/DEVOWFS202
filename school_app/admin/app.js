@@ -412,7 +412,7 @@ document.querySelector("#Attclass").addEventListener('change', () => {
             }
         });
     }
-
+    document.getElementById("Attsub").innerHTML = "<option value='0' selected disabled>اختر المادة</option>";
     getSubjets("Attsub");
 });
 
@@ -537,6 +537,7 @@ document.querySelector("#submitAtt").addEventListener('click',()=>{
 getClasses("AttclassDell");
 
 document.getElementById("AttclassDell").addEventListener('change',async()=>{
+    document.getElementById("AttsubDell").innerHTML = "<option value='0' selected disabled>اختر الطالب</option>";
     let students = await getStudents("AttclassDell");
     let select = document.getElementById("AttsubDell");
     students.forEach(stud =>{

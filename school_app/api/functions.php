@@ -47,7 +47,7 @@ function getStudentMarks($conn,$student_id,$subjects,$term){
 function getTeacherSubjects($conn,$teacher_id){
     $subs = [];
     if ($teacher_id == 'all'){
-        $sql = "SELECT id , name FROM subject_teacher st INNER JOIN subjects s ON st.subject_id = id WHERE 1";
+        $sql = "SELECT * FROM subjects ";
     }else {
         $sql = "SELECT id , name FROM subject_teacher st INNER JOIN subjects s ON st.subject_id = id WHERE st.teacher_id = $teacher_id";
     }

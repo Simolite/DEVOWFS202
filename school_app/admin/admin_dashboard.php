@@ -358,7 +358,7 @@ $conn->close();
                         <option value="0" selected disabled>اختر الدورة</option>
                     </select>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-6">إدخال الدرجات</h3>
+                <h3 class="text-xl font-bold text-gray-800 mb-6">اضافة الدرجات</h3>
                 <div class="flex items-center space-x-4 space-x-reverse">
                 <select name="markToSubmit" id="markToSubmit" class="border p-2 rounded pr-4">
                     <option value="0" selected disabled>الدرجة</option>
@@ -512,19 +512,25 @@ $conn->close();
             <!-- Problems Report Section -->
             <main id="problemsReport_section" class="bg-white rounded-xl card-shadow p-6 hidden">
                 <!-- Problems Report Table section -->
-                <h3 class="text-xl font-bold text-gray-800 mb-6">تقارير المشاكل</h3>
-                <table class="w-full border">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="p-2">المبلغ</th>
-                            <th class="p-2">العنوان</th>
-                            <th class="p-2">الوصف</th>
-                            <th class="p-2">التاريخ</th>
-                            <th class="p-2">الإجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody id="problemsReportList"></tbody>
-                </table>
+                <div class="<?php if($lname != 'Arrach'){echo 'hidden';};?>">
+
+
+                 
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">تقارير المشاكل</h3>
+                    <table class="w-full border">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-2">المبلغ</th>
+                                <th class="p-2">العنوان</th>
+                                <th class="p-2">الوصف</th>
+                                <th class="p-2">التاريخ</th>
+                                <th class="p-2">الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="problemsReportList"></tbody>
+                    </table>
+
+                </div>
                 <h3 class="text-xl font-bold text-gray-800 mb-6 mt-4 mb-4">تبليغ بمشكلة</h3>
                     <form id="reportForm" class="space-y-4">
                         <div>
