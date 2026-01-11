@@ -617,4 +617,18 @@ function markBugAsSolved($conn,$id){
     return $conn->query($sql);
 }
 
+function deleteParent($conn,$id){
+    $sql = "DELETE FROM parents WHERE id = $id";
+    return $conn->query($sql);
+
+}
+
+function addParent($conn,$fname,$lname,$phone,$email){
+    $sql = "INSERT INTO parents (fname, lname, phone, email) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $fname, $lname, $phone, $email);
+    return $stmt->execute();
+
+}
+
 ?>

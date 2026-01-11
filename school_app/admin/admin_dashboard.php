@@ -495,18 +495,42 @@ $conn->close();
             </main>
 
             <!-- parents Section-->
-            <main id="parents_section" class="bg-white rounded-xl card-shadow p-6 hidden grid grid-rows-2 gap-4">
-                <h3 class="text-xl font-bold text-gray-800 mb-6">إدارة أولياء الأمور</h3>
-                <select name="parentsSelect" id="parentsSelect" class="border p-2 rounded w-full">
-                    <option value="0" selected disabled>اختر ولي الامر</option>
-                </select>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <input id="parentFnameAdmin" type="text" class="border p-2 rounded" placeholder="الاسم">
-                    <input id="parentLnameAdmin" type="text" class="border p-2 rounded" placeholder="اللقب">
-                    <input id="parentEmailAdmin" type="email" class="border p-2 rounded" placeholder="البريد الإلكتروني">
-                    <input id="parentPhoneAdmin" type="tel" class="border p-2 rounded" placeholder="الهاتف">
+            <main id="parents_section" class="bg-white rounded-xl card-shadow p-6 hidden grid grid-rows-2  relative">
+                <div class="absolute top-0 right-0 flex">
+                    <button id="show_add_parent" class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">إضافة ولي أمر جديد</button>
+                    <button id="show_parent_info" class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">معلومات أولياء الأمور</button>
+                    <button id="show_delete_parent" class="tab-inactive px-6 py-3 font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border-b-2 border-transparent rounded-t-lg">حذف ولي أمر</button>
                 </div>
-                <button id="add_parent" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">حفض التغييرات</button>
+                <div id="addParent">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 mt-8">إضافة ولي أمر جديد</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <input id="newParentFname" type="text" class="border p-2 rounded" placeholder="الاسم">
+                        <input id="newParentLname" type="text" class="border p-2 rounded" placeholder="اللقب">
+                        <input id="newParentEmail" type="email" class="border p-2 rounded" placeholder="البريد الإلكتروني">
+                        <input id="newParentPhone" type="tel" class="border p-2 rounded" placeholder="الهاتف">
+                    </div>
+                    <button id="add_parent_btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">إضافة ولي أمر</button>
+                </div>
+                <div id="parent_info" class="hidden">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 mt-8">معلومات أولياء الأمور</h3>
+                    <select name="parentsSelect" id="parentsSelect" class="border p-2 rounded w-full mb-4">
+                        <option value="0" selected disabled>اختر ولي الامر</option>
+                    </select>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <input id="parentFnameAdmin" type="text" class="border p-2 rounded" placeholder="الاسم">
+                        <input id="parentLnameAdmin" type="text" class="border p-2 rounded" placeholder="اللقب">
+                        <input id="parentEmailAdmin" type="email" class="border p-2 rounded" placeholder="البريد الإلكتروني">
+                        <input id="parentPhoneAdmin" type="tel" class="border p-2 rounded" placeholder="الهاتف">
+                    </div>
+                    <button id="add_parent" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">حفض التغييرات</button>
+                </div>
+                <div id="delete_parent" class="hidden">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 mt-8">حذف ولي أمر</h3>
+                    <select name="parentsDeleteSelect" id="parentsDeleteSelect" class="border p-2 rounded w-full mb-4">
+                        <option value="0" selected disabled>اختر ولي الامر</option>
+                    </select>
+                    <button id="delete_parent_btn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">حذف ولي الأمر</button>
+                </div>
             </main>
 
             <!-- Problems Report Section -->

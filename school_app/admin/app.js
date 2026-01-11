@@ -1132,6 +1132,7 @@ populateClassSelect("studentClassSelect");
 
 
 async function populateParentSelect(id) {
+    document.getElementById(id).innerHTML = '<option value="0" selected disabled>اختر ولي الأمر</option>';
 
     let parents = await getParents();
     
@@ -1211,6 +1212,8 @@ async function updateParent(id,fname,lname,phone,email){
     } catch (error) {
         console.error("خطأ أثناء تحديث بيانات ولي الأمر:", error);
     }
+    await populateParentSelect("parentsDeleteSelect");
+    await populateParentSelect("parentsSelect");
 }
 
 document.getElementById("add_parent").addEventListener('click',()=>{
@@ -1542,3 +1545,132 @@ async function populateBugReports() {
 };
 
 populateBugReports();
+
+
+async function deleteParent(id){
+    let url = `../api/deleteParent.php?id=${id}`;
+    try {
+        await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        });
+    }catch(error){
+        alert(error);
+    }
+    await populateParentSelect("parentsDeleteSelect");
+    await populateParentSelect("parentsSelect");
+};
+
+
+document.getElementById("delete_parent_btn").addEventListener("click", async () => {
+    let parent_id = document.getElementById("parentsDeleteSelect").value;
+    if(!parent_id){
+        alert("Please select a parent to delete");
+        return;
+    }
+    if(!confirm("Are you sure you want to delete this parent? This action cannot be undone.")){
+        return;
+    }
+    await deleteParent(parent_id);
+});
+populateParentSelect("parentsDeleteSelect");
+
+
+async function addParent($fname, $lname, $phone, $email){
+    let url = "../api/addParent.php";
+    try {
+        let response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                fname: $fname,
+                lname: $lname,
+                phone: $phone,
+                email: $email
+            })
+        });
+        
+        
+        let data = await response.json();
+        
+
+        if (data.success) {
+            alert("تمت إضافة ولي الأمر بنجاح ✅");
+        } else {
+            alert("فشل في الإضافة ❌: " + (data.error || "خطأ غير معروف"));
+        }
+    } catch (error) {
+        console.error("خطأ أثناء إضافة ولي الأمر:", error);
+    }
+    await populateParentSelect("parentsDeleteSelect");
+    await populateParentSelect("parentsSelect");
+}
+
+
+document.getElementById("add_parent_btn").addEventListener('click',()=>{
+    let fname = document.getElementById("newParentFname").value;
+    let lname = document.getElementById("newParentLname").value;
+    let phone = document.getElementById("newParentPhone").value;
+    let email = document.getElementById("newParentEmail").value;
+
+    if(!fname || !lname || !phone || !email){
+        alert("Please fill all required fields");
+        return;
+    }
+
+    addParent(fname, lname, phone, email);
+});
+
+
+document.getElementById("show_add_parent").addEventListener("click", async () => {
+    let add = document.getElementById("addParent");
+    let edit = document.getElementById("parent_info");
+    let del = document.getElementById("delete_parent");
+    if(add.classList.contains('hidden')){
+        add.classList.remove('hidden');
+    }
+    if(!edit.classList.contains('hidden')){
+        edit.classList.add("hidden")
+    }
+    if(!del.classList.contains('hidden')){
+        del.classList.add("hidden")
+    }
+});
+
+
+document.getElementById("show_parent_info").addEventListener("click", async () => {
+    let add = document.getElementById("addParent");
+    let edit = document.getElementById("parent_info");
+    let del = document.getElementById("delete_parent");
+    if(!add.classList.contains('hidden')){
+        add.classList.add('hidden');
+    }
+    if(edit.classList.contains('hidden')){
+        edit.classList.remove("hidden")
+    }
+    if(!del.classList.contains('hidden')){
+        del.classList.add("hidden")
+    }
+});
+
+
+document.getElementById("show_delete_parent").addEventListener("click", async () => {
+    let add = document.getElementById("addParent");
+    let edit = document.getElementById("parent_info");
+    let del = document.getElementById("delete_parent");
+    if(!add.classList.contains('hidden')){
+        add.classList.add('hidden');
+    }
+    if(!edit.classList.contains('hidden')){
+        edit.classList.add("hidden")
+    }
+    if(del.classList.contains('hidden')){
+        del.classList.remove("hidden")
+    }
+});
